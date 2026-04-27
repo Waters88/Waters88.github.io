@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solucionador de Ecuaciones 2x2</title>
+    
+    <!-- Tailwind CSS para el diseño -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js para la graficación -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* bg-gray-100 */
+        }
+
+        /* Estilos personalizados para parecer paréntesis/corchetes de matrices */
+        .matrix-bracket {
+            position: relative;
+            display: inline-block;
+            padding: 0 10px;
+        }
+        .matrix-bracket::before,
+        .matrix-bracket::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 8px;
+            border: 2px solid #374151; /* gray-700 */
+        }
+        .matrix-bracket::before {
+            left: 0;
+            border-right: none;
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+        }
+        .matrix-bracket::after {
+            right: 0;
+            border-left: none;
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8 flex flex-col items-center">
+
+    <nav class="w-full max-w-6xl mx-auto mb-6 bg-white/95 border border-slate-200 rounded-2xl shadow-sm px-4 py-3">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <a href="index.html" class="flex items-center gap-2 font-bold text-slate-900">
+                <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white">↩</span>
+                Menú principal
+            </a>
+            <div class="flex flex-wrap gap-2 text-sm">
+                <a class="rounded-xl px-3 py-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition" href="index.html">Inicio</a>
+                <a class="rounded-xl px-3 py-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition" href="sistemas_de_ecuaciones.html">Sistemas</a>
+                <a class="rounded-xl px-3 py-2 bg-indigo-600 text-white font-semibold shadow-sm" href="matriz_inversa.html">Matriz inversa</a>
+                <a class="rounded-xl px-3 py-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition" href="bases_espacios_vectoriales.html">Espacios vectoriales</a>
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="max-w-6xl w-full bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row">
+        
+        <!-- Panel Izquierdo: Entradas y Resultados -->
+        <div class="w-full md:w-5/12 p-6 md:p-8 border-b md:border-b-0 md:border-r border-gray-200 flex flex-col gap-6 overflow-y-auto" style="max-height: 90vh;">
+            
+            <div class="text-center md:text-left">
+                <h1 class="text-2xl font-bold text-gray-800">Sistema de Ecuaciones</h1>
+                <p class="text-sm text-gray-500 mt-1">Método de la Matriz Inversa (AX = B)</p>
+            </div>
+
+            <div class="bg-blue-50 p-4 rounded-xl border border-blue-100">
+                <h2 class="text-sm font-semibold text-blue-800 mb-3 uppercase tracking-wider">Ingresar Coeficientes</h2>
+                
+                <!-- Ecuación 1 -->
+                <div class="flex items-center gap-2 mb-4 justify-center">
+                    <input type="number" id="a11" value="2" class="w-16 p-2 text-center border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition">
+                    <span class="font-semibold text-gray-700">x +</span>
+                    <input type="number" id="a12" value="1" class="w-16 p-2 text-center border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition">
+                    <span class="font-semibold text-gray-700">y =</span>
+                    <input type="number" id="b1" value="5" class="w-16 p-2 text-center border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition bg-green-50">
+                </div>
+                
+                <!-- Ecuación 2 -->
+                <div class="flex items-center gap-2 mb-4 justify-center">
+                    <input type="number" id="a21" value="1" class="w-16 p-2 text-center border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition">
+                    <span class="font-semibold text-gray-700">x +</span>
+                    <input type="number" id="a22" value="-1" class="w-16 p-2 text-center border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition">
+                    <span class="font-semibold text-gray-700">y =</span>
+                    <input type="number" id="b2" value="1" class="w-16 p-2 text-center border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition bg-green-50">
+                </div>
+
+                <button id="calculateBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow transition duration-200">
+                    Calcular y Graficar
+                </button>
+            </div>
+
+            <!-- Contenedor de Error -->
+            <div id="errorBox" class="hidden bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-sm transition-all">
+                <p class="font-bold">Error: Matriz no invertible</p>
+                <p class="text-sm">El determinante es 0. Las rectas son paralelas o coincidentes, por lo que no hay una solución única.</p>
+            </div>
+
+            <!-- Contenedor de Resultados Matemáticos -->
+            <div id="resultsContainer" class="flex flex-col gap-6 transition-all">
+                
+                <!-- Matrices -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="flex flex-col items-center">
+                        <span class="text-sm font-semibold text-gray-600 mb-2">Matriz A</span>
+                        <div class="matrix-bracket font-mono text-lg text-center" id="matrixA">
+                            <div class="grid grid-cols-2 gap-x-4 gap-y-1">
+                                <span>0</span><span>0</span>
+                                <span>0</span><span>0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col items-center">
+                        <span class="text-sm font-semibold text-gray-600 mb-2">Matriz Inversa A<sup>-1</sup></span>
+                        <div class="matrix-bracket font-mono text-sm text-center" id="matrixAInv">
+                            <div class="grid grid-cols-2 gap-x-4 gap-y-1">
+                                <span>0</span><span>0</span>
+                                <span>0</span><span>0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col items-center mt-2">
+                    <span class="text-sm font-semibold text-gray-600 mb-2">Vector B</span>
+                    <div class="matrix-bracket font-mono text-lg text-center" id="matrixB">
+                        <div class="grid grid-cols-1 gap-y-1">
+                            <span>0</span>
+                            <span>0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Solución -->
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 flex flex-col items-center">
+                    <h3 class="text-sm font-semibold text-gray-800 mb-3">Solución X = A<sup>-1</sup>B</h3>
+                    <div class="flex items-center gap-4 text-xl font-bold text-blue-700">
+                        <div class="flex flex-col items-end">
+                            <span>x = <span id="solX">0</span></span>
+                            <span>y = <span id="solY">0</span></span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Panel Derecho: Gráfica -->
+        <div class="w-full md:w-7/12 p-6 flex flex-col bg-white">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4 flex-shrink-0 text-center md:text-left">Plano Cartesiano</h2>
+            <div class="flex-grow relative min-h-[400px] w-full border border-gray-200 rounded-xl bg-gray-50 shadow-inner flex items-center justify-center p-2">
+                <canvas id="graphCanvas"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Elementos DOM
+        const inputs = {
+            a11: document.getElementById('a11'),
+            a12: document.getElementById('a12'),
+            b1:  document.getElementById('b1'),
+            a21: document.getElementById('a21'),
+            a22: document.getElementById('a22'),
+            b2:  document.getElementById('b2')
+        };
+        const calculateBtn = document.getElementById('calculateBtn');
+        const errorBox = document.getElementById('errorBox');
+        const resultsContainer = document.getElementById('resultsContainer');
+        
+        const displays = {
+            matrixA: document.getElementById('matrixA'),
+            matrixAInv: document.getElementById('matrixAInv'),
+            matrixB: document.getElementById('matrixB'),
+            solX: document.getElementById('solX'),
+            solY: document.getElementById('solY')
+        };
+
+        let chartInstance = null;
+
+        // Formateador de números para evitar decimales muy largos
+        const formatNumber = (num) => Number.isInteger(num) ? num : parseFloat(num.toFixed(3));
+
+        // Obtener valores de los inputs
+        function getValues() {
+            return {
+                a11: parseFloat(inputs.a11.value) || 0,
+                a12: parseFloat(inputs.a12.value) || 0,
+                b1:  parseFloat(inputs.b1.value)  || 0,
+                a21: parseFloat(inputs.a21.value) || 0,
+                a22: parseFloat(inputs.a22.value) || 0,
+                b2:  parseFloat(inputs.b2.value)  || 0
+            };
+        }
+
+        // Lógica de cálculo matemático
+        function calculateSystem() {
+            const vals = getValues();
+            
+            // 1. Determinar matriz A y vector B
+            const A = [
+                [vals.a11, vals.a12],
+                [vals.a21, vals.a22]
+            ];
+            const B = [vals.b1, vals.b2];
+
+            // 2. Calcular el determinante
+            const detA = (A[0][0] * A[1][1]) - (A[0][1] * A[1][0]);
+
+            // 3. Revisar invertibilidad (si detA es casi 0)
+            if (Math.abs(detA) < 1e-10) {
+                showError();
+                updateGraph(vals, null, null); // Graficaremos las líneas aunque no haya solución única
+                return;
+            }
+
+            // 4. Calcular matriz inversa A^-1
+            const invA = [
+                [ A[1][1] / detA, -A[0][1] / detA],
+                [-A[1][0] / detA,  A[0][0] / detA]
+            ];
+
+            // 5. Calcular solución X = A^-1 * B
+            const x = (invA[0][0] * B[0]) + (invA[0][1] * B[1]);
+            const y = (invA[1][0] * B[0]) + (invA[1][1] * B[1]);
+
+            // Mostrar resultados exitosos
+            showResults(A, invA, B, x, y);
+            updateGraph(vals, x, y);
+        }
+
+        function showError() {
+            errorBox.classList.remove('hidden');
+            resultsContainer.classList.add('opacity-30', 'pointer-events-none');
+            // Limpiar solución
+            displays.solX.innerText = "—";
+            displays.solY.innerText = "—";
+        }
+
+        function showResults(A, invA, B, x, y) {
+            errorBox.classList.add('hidden');
+            resultsContainer.classList.remove('opacity-30', 'pointer-events-none');
+
+            // Renderizar Matriz A
+            displays.matrixA.innerHTML = `
+                <div class="grid grid-cols-2 gap-x-4 gap-y-1">
+                    <span>${formatNumber(A[0][0])}</span><span>${formatNumber(A[0][1])}</span>
+                    <span>${formatNumber(A[1][0])}</span><span>${formatNumber(A[1][1])}</span>
+                </div>
+            `;
+
+            // Renderizar Matriz Inversa
+            displays.matrixAInv.innerHTML = `
+                <div class="grid grid-cols-2 gap-x-4 gap-y-1">
+                    <span>${formatNumber(invA[0][0])}</span><span>${formatNumber(invA[0][1])}</span>
+                    <span>${formatNumber(invA[1][0])}</span><span>${formatNumber(invA[1][1])}</span>
+                </div>
+            `;
+
+            // Renderizar Vector B
+            displays.matrixB.innerHTML = `
+                <div class="grid grid-cols-1 gap-y-1">
+                    <span class="text-green-700">${formatNumber(B[0])}</span>
+                    <span class="text-green-700">${formatNumber(B[1])}</span>
+                </div>
+            `;
+
+            // Renderizar Solución
+            displays.solX.innerText = formatNumber(x);
+            displays.solY.innerText = formatNumber(y);
+        }
+
+        // Obtener dos puntos alejados para dibujar una recta (a*x + b*y = c)
+        function getLinePoints(a, b, c, centerX) {
+            const range = 15; // Distancia desde el centro en X para trazar la línea
+            const xMin = centerX - range;
+            const xMax = centerX + range;
+
+            // Si es una línea vertical (b == 0)
+            if (Math.abs(b) < 1e-10) {
+                const xVal = c / a;
+                return [
+                    { x: xVal, y: -20 },
+                    { x: xVal, y: 20 }
+                ];
+            }
+
+            // Si no es vertical, calculamos y = (c - ax) / b
+            const yMin = (c - a * xMin) / b;
+            const yMax = (c - a * xMax) / b;
+            
+            return [
+                { x: xMin, y: yMin },
+                { x: xMax, y: yMax }
+            ];
+        }
+
+        function updateGraph(vals, solX, solY) {
+            const ctx = document.getElementById('graphCanvas').getContext('2d');
+            
+            // Determinar centro del gráfico
+            const centerX = solX !== null ? solX : 0;
+
+            // Generar puntos para las dos rectas
+            const line1Data = getLinePoints(vals.a11, vals.a12, vals.b1, centerX);
+            const line2Data = getLinePoints(vals.a21, vals.a22, vals.b2, centerX);
+
+            // Preparar datasets
+            const datasets = [
+                {
+                    label: 'Recta 1',
+                    data: line1Data,
+                    borderColor: 'rgba(59, 130, 246, 1)', // blue-500
+                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                    borderWidth: 2,
+                    showLine: true,
+                    pointRadius: 0, // Ocultar puntos de los extremos
+                    tension: 0
+                },
+                {
+                    label: 'Recta 2',
+                    data: line2Data,
+                    borderColor: 'rgba(16, 185, 129, 1)', // emerald-500
+                    backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                    borderWidth: 2,
+                    showLine: true,
+                    pointRadius: 0,
+                    tension: 0
+                }
+            ];
+
+            // Si hay solución, añadir punto de intersección
+            if (solX !== null && solY !== null) {
+                datasets.push({
+                    label: 'Intersección (Solución)',
+                    data: [{ x: solX, y: solY }],
+                    backgroundColor: 'rgba(239, 68, 68, 1)', // red-500
+                    borderColor: '#fff',
+                    borderWidth: 2,
+                    pointRadius: 6,
+                    pointHoverRadius: 8,
+                    showLine: false
+                });
+            }
+
+            // Destruir gráfico previo si existe
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            // Crear nuevo gráfico
+            chartInstance = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            position: 'center', // Eje cruza por el origen
+                            grid: {
+                                color: (ctx) => ctx.tick.value === 0 ? '#374151' : '#e5e7eb', // Eje principal más oscuro
+                                lineWidth: (ctx) => ctx.tick.value === 0 ? 2 : 1
+                            }
+                        },
+                        y: {
+                            type: 'linear',
+                            position: 'center',
+                            grid: {
+                                color: (ctx) => ctx.tick.value === 0 ? '#374151' : '#e5e7eb',
+                                lineWidth: (ctx) => ctx.tick.value === 0 ? 2 : 1
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    if (context.dataset.label.includes('Intersección')) {
+                                        return `Solución: (${formatNumber(context.parsed.x)}, ${formatNumber(context.parsed.y)})`;
+                                    }
+                                    return `(${formatNumber(context.parsed.x)}, ${formatNumber(context.parsed.y)})`;
+                                }
+                            }
+                        },
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Event Listeners
+        calculateBtn.addEventListener('click', calculateSystem);
+
+        // Permitir recalcular al presionar 'Enter' en cualquier input
+        Object.values(inputs).forEach(input => {
+            input.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    calculateSystem();
+                }
+            });
+        });
+
+        // Ejecutar al cargar la página por primera vez con los valores por defecto
+        window.onload = calculateSystem;
+
+    </script>
+</body>
+</html>

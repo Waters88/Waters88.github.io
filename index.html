@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú de Álgebra Lineal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .hero-grid {
+            background-image:
+                linear-gradient(rgba(99,102,241,.12) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(99,102,241,.12) 1px, transparent 1px);
+            background-size: 38px 38px;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-100">
+    <main class="hero-grid min-h-screen">
+        <section class="max-w-6xl mx-auto px-5 py-8 md:py-12">
+            <nav class="mb-10 rounded-2xl border border-white/10 bg-white/5 backdrop-blur px-4 py-3 shadow-xl">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                    <a href="index.html" class="flex items-center gap-2 font-bold tracking-tight text-white">
+                        <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-500 shadow-lg shadow-indigo-500/20">
+                            <i class="ph ph-function text-xl"></i>
+                        </span>
+                        Álgebra Lineal Interactiva
+                    </a>
+                    <div class="flex flex-wrap gap-2 text-sm">
+                        <a class="rounded-xl bg-indigo-500 px-3 py-2 font-semibold text-white" href="index.html">Inicio</a>
+                        <a class="rounded-xl px-3 py-2 text-slate-300 hover:bg-white/10 hover:text-white transition" href="sistemas_de_ecuaciones.html">Sistemas</a>
+                        <a class="rounded-xl px-3 py-2 text-slate-300 hover:bg-white/10 hover:text-white transition" href="matriz_inversa.html">Matriz inversa</a>
+                        <a class="rounded-xl px-3 py-2 text-slate-300 hover:bg-white/10 hover:text-white transition" href="bases_espacios_vectoriales.html">Espacios vectoriales</a>
+                    </div>
+                </div>
+            </nav>
+
+            <header class="text-center mb-12">
+                <p class="text-indigo-300 font-semibold uppercase tracking-[0.25em] text-xs mb-4">Menú principal</p>
+                <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-white mb-5">
+                    Exploradores interactivos de Álgebra Lineal
+                </h1>
+                <p class="max-w-3xl mx-auto text-slate-300 text-lg leading-relaxed">
+                    Accede desde este archivo fuente a las tres secciones conservando la funcionalidad original: cálculo, visualización gráfica, matrices y exploración de espacios vectoriales.
+                </p>
+            </header>
+
+            <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <a href="sistemas_de_ecuaciones.html" class="group rounded-3xl border border-white/10 bg-slate-900/80 p-6 shadow-2xl shadow-black/20 hover:-translate-y-1 hover:border-indigo-400/60 hover:bg-slate-900 transition duration-300">
+                    <div class="mb-5 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-500/15 text-blue-300 group-hover:bg-blue-500 group-hover:text-white transition">
+                        <i class="ph ph-chart-line-up text-3xl"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-white mb-2">Sistemas de ecuaciones</h2>
+                    <p class="text-slate-400 mb-5">Calculadora gráfica para sistemas lineales 2x2 con detección de solución única, infinitas soluciones o sistema incompatible.</p>
+                    <span class="inline-flex items-center gap-2 text-indigo-300 font-semibold">
+                        Abrir sección <i class="ph ph-arrow-right"></i>
+                    </span>
+                </a>
+
+                <a href="matriz_inversa.html" class="group rounded-3xl border border-white/10 bg-slate-900/80 p-6 shadow-2xl shadow-black/20 hover:-translate-y-1 hover:border-indigo-400/60 hover:bg-slate-900 transition duration-300">
+                    <div class="mb-5 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/15 text-emerald-300 group-hover:bg-emerald-500 group-hover:text-white transition">
+                        <i class="ph ph-brackets-square text-3xl"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-white mb-2">Matriz inversa</h2>
+                    <p class="text-slate-400 mb-5">Resolución de sistemas 2x2 mediante AX = B, visualización de A, A⁻¹, B y gráfica en el plano cartesiano.</p>
+                    <span class="inline-flex items-center gap-2 text-indigo-300 font-semibold">
+                        Abrir sección <i class="ph ph-arrow-right"></i>
+                    </span>
+                </a>
+
+                <a href="bases_espacios_vectoriales.html" class="group rounded-3xl border border-white/10 bg-slate-900/80 p-6 shadow-2xl shadow-black/20 hover:-translate-y-1 hover:border-indigo-400/60 hover:bg-slate-900 transition duration-300">
+                    <div class="mb-5 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-purple-500/15 text-purple-300 group-hover:bg-purple-500 group-hover:text-white transition">
+                        <i class="ph ph-cube-focus text-3xl"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-white mb-2">Bases y espacios vectoriales</h2>
+                    <p class="text-slate-400 mb-5">Explorador con notación matemática, dimensión, base canónica, subespacios y conjuntos generadores.</p>
+                    <span class="inline-flex items-center gap-2 text-indigo-300 font-semibold">
+                        Abrir sección <i class="ph ph-arrow-right"></i>
+                    </span>
+                </a>
+            </section>
+
+            <footer class="mt-12 text-center text-sm text-slate-500">
+                Archivos generados como sitio estático HTML. Abre <span class="font-mono text-slate-300">index.html</span> para navegar entre las secciones.
+            </footer>
+        </section>
+    </main>
+</body>
+</html>

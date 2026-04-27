@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explorador de Espacios Vectoriales</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- KaTeX para Notación Matemática -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" xintegrity="sha384-n8MVd4RsJOPaH4zfc1h1yosO3/0LcasXz/OigM4h3LDF3oFsXG//OikSsyQ2Qf/B" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" xintegrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" xintegrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbOxyj0O1bT41BvX//fcMoE9h" crossorigin="anonymous"></script>
+
+    <style>
+        /* Estilos personalizados para animaciones y scrollbars */
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            min-height: 100vh;
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .fade-enter {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+        .fade-enter-active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Estilo para el select en modo oscuro */
+        select option {
+            background-color: #1e293b;
+            color: #f8fafc;
+        }
+    </style>
+</head>
+<body class="text-slate-200 font-sans p-6 md:p-12 flex flex-col items-center">
+
+    <nav class="w-full max-w-6xl mx-auto mb-8 bg-slate-900/70 backdrop-blur border border-white/10 rounded-2xl shadow-xl px-4 py-3">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <a href="index.html" class="flex items-center gap-2 font-bold text-white">
+                <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-500 text-white">↩</span>
+                Menú principal
+            </a>
+            <div class="flex flex-wrap gap-2 text-sm">
+                <a class="rounded-xl px-3 py-2 text-slate-300 hover:bg-white/10 hover:text-white transition" href="index.html">Inicio</a>
+                <a class="rounded-xl px-3 py-2 text-slate-300 hover:bg-white/10 hover:text-white transition" href="sistemas_de_ecuaciones.html">Sistemas</a>
+                <a class="rounded-xl px-3 py-2 text-slate-300 hover:bg-white/10 hover:text-white transition" href="matriz_inversa.html">Matriz inversa</a>
+                <a class="rounded-xl px-3 py-2 bg-indigo-500 text-white font-semibold shadow-lg shadow-indigo-500/20" href="bases_espacios_vectoriales.html">Espacios vectoriales</a>
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="max-w-4xl w-full">
+        <!-- Encabezado -->
+        <header class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400 mb-4">
+                Espacios Vectoriales
+            </h1>
+            <p class="text-slate-400 text-lg">Selecciona un espacio vectorial para explorar sus propiedades matemáticas fundamentales.</p>
+        </header>
+
+        <!-- Selector -->
+        <div class="relative mb-10">
+            <label for="space-select" class="block text-sm font-medium text-indigo-300 mb-2">Listado de Espacios Vectoriales</label>
+            <select id="space-select" class="block w-full px-4 py-4 text-base text-slate-100 bg-slate-800/80 border border-indigo-500/50 rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none transition-all cursor-pointer">
+                <option value="" disabled selected>-- Selecciona una opción --</option>
+                <option value="rn">Espacio euclidiano Rⁿ</option>
+                <option value="matrix">Espacio de matrices M(m×n)</option>
+                <option value="pn">Espacio de Polinomios Pn</option>
+                <option value="cab">Espacio de funciones continuas C[a,b]</option>
+                <option value="nullspace">Espacio de soluciones de sistemas homogéneos (Ax = 0)</option>
+            </select>
+            <!-- Ícono de flecha personalizado -->
+            <div class="pointer-events-none absolute inset-y-0 right-0 top-7 flex items-center px-4 text-indigo-400">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Tarjeta de Resultados (Oculta por defecto) -->
+        <div id="result-card" class="glass-card rounded-2xl shadow-2xl p-8 hidden fade-enter">
+            <h2 id="card-title" class="text-3xl font-bold text-white mb-8 pb-4 border-b border-slate-700/50"></h2>
+
+            <div class="space-y-6">
+                <!-- 1. Notación -->
+                <div class="bg-slate-800/40 p-5 rounded-xl border border-slate-700/50 hover:bg-slate-800/60 transition-colors">
+                    <h3 class="text-indigo-400 font-semibold text-sm uppercase tracking-wider mb-2">1. Notación Matemática</h3>
+                    <p id="card-notation" class="text-xl text-slate-100"></p>
+                </div>
+
+                <!-- 2. Dimensión -->
+                <div class="bg-slate-800/40 p-5 rounded-xl border border-slate-700/50 hover:bg-slate-800/60 transition-colors">
+                    <h3 class="text-indigo-400 font-semibold text-sm uppercase tracking-wider mb-2">2. Dimensión</h3>
+                    <p id="card-dimension" class="text-lg text-slate-200"></p>
+                </div>
+
+                <!-- 3. Base Canónica -->
+                <div class="bg-slate-800/40 p-5 rounded-xl border border-slate-700/50 hover:bg-slate-800/60 transition-colors">
+                    <h3 class="text-indigo-400 font-semibold text-sm uppercase tracking-wider mb-2">3. Base Canónica</h3>
+                    <p id="card-base" class="text-lg text-slate-200 leading-relaxed"></p>
+                </div>
+
+                <!-- 4. Ejemplo de Subespacio -->
+                <div class="bg-slate-800/40 p-5 rounded-xl border border-slate-700/50 hover:bg-slate-800/60 transition-colors">
+                    <h3 class="text-indigo-400 font-semibold text-sm uppercase tracking-wider mb-2">4. Ejemplo de Subespacio Vectorial</h3>
+                    <p id="card-subspace" class="text-lg text-slate-200 leading-relaxed"></p>
+                </div>
+
+                <!-- 5. Conjunto Generador L.D. -->
+                <div class="bg-slate-800/40 p-5 rounded-xl border border-slate-700/50 hover:bg-slate-800/60 transition-colors">
+                    <h3 class="text-indigo-400 font-semibold text-sm uppercase tracking-wider mb-2">5. Conjunto Generador (Linealmente Dependiente)</h3>
+                    <p id="card-generator" class="text-lg text-slate-200 leading-relaxed"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Base de datos de los espacios vectoriales usando sintaxis LaTeX ($...$ para inline, $$...$$ para block)
+        const spacesData = {
+            rn: {
+                title: "Espacio Euclidiano $\\mathbb{R}^n$",
+                notation: "$$\\mathbb{R}^n = \\{ (x_1, x_2, \\dots, x_n) \\mid x_i \\in \\mathbb{R} \\}$$",
+                dimension: "$$\\dim(\\mathbb{R}^n) = n$$",
+                base: "La base canónica es $E = \\{e_1, e_2, \\dots, e_n\\}$, donde cada $e_i$ es un vector con un $1$ en la $i$-ésima posición y ceros en el resto. Por ejemplo, en $\\mathbb{R}^3$, $e_1 = (1,0,0)$.",
+                subspace: "Un hiperplano que pasa por el origen. Por ejemplo: $$W = \\{ (x_1, x_2, \\dots, x_n) \\in \\mathbb{R}^n \\mid x_1 + x_2 + \\dots + x_n = 0 \\}$$",
+                generator: "Tomamos la base canónica y le añadimos un vector que sea combinación lineal de ellos. $$S = \\{e_1, e_2, \\dots, e_n, e_1 + e_2\\}$$ Genera todo $\\mathbb{R}^n$ (porque contiene a la base) pero es Linealmente Dependiente."
+            },
+            matrix: {
+                title: "Espacio de Matrices $\\mathcal{M}_{m \\times n}$",
+                notation: "$$\\mathcal{M}_{m \\times n}(\\mathbb{R}) \\quad \\text{o} \\quad \\mathbb{R}^{m \\times n}$$",
+                dimension: "$$\\dim(\\mathcal{M}_{m \\times n}) = m \\cdot n$$",
+                base: "La base canónica es $B = \\{E_{ij} \\mid 1 \\le i \\le m, 1 \\le j \\le n\\}$, donde $E_{ij}$ es una matriz de tamaño $m \\times n$ con un $1$ en la fila $i$, columna $j$, y $0$ en todas las demás entradas.",
+                subspace: "Si $m = n$, el conjunto de las matrices simétricas: $$W = \\{ A \\in \\mathcal{M}_{n \\times n} \\mid A = A^T \\}$$",
+                generator: "La base canónica $B$ unida a la matriz $J_{m \\times n}$ (la matriz donde todas sus entradas son $1$). $$S = B \\cup \\{ J_{m \\times n} \\}$$ Al sumar todos los $E_{ij}$ se obtiene $J_{m \\times n}$, haciéndolo L.D."
+            },
+            pn: {
+                title: "Espacio de Polinomios $\\mathcal{P}_n$",
+                notation: "$$\\mathcal{P}_n(\\mathbb{R}) = \\{ p(x) = a_0 + a_1x + a_2x^2 + \\dots + a_nx^n \\mid a_i \\in \\mathbb{R} \\}$$",
+                dimension: "$$\\dim(\\mathcal{P}_n) = n + 1$$",
+                base: "La base canónica está formada por los monomios desde el grado 0 hasta el grado $n$: $$B = \\{1, x, x^2, \\dots, x^n\\}$$",
+                subspace: "El conjunto de polinomios en $\\mathcal{P}_n$ cuyo término independiente es cero (es decir, $p(0) = 0$): $$W = \\{ x \\cdot q(x) \\mid q(x) \\in \\mathcal{P}_{n-1} \\}$$",
+                generator: "Añadimos el polinomio $(1+x)$ a la base canónica: $$S = \\{1, x, x^2, \\dots, x^n, 1 + x\\}$$ Sigue generando todo $\\mathcal{P}_n$, pero es L.D. porque $(1+x) = 1 \\cdot (1) + 1 \\cdot (x)$."
+            },
+            cab: {
+                title: "Espacio de Funciones Continuas $C[a,b]$",
+                notation: "$$C([a, b], \\mathbb{R}) = \\{ f: [a, b] \\to \\mathbb{R} \\mid f \\text{ es continua en } [a,b] \\}$$",
+                dimension: "$$\\infty$$ (Es un espacio de dimensión infinita)",
+                base: "Este espacio no posee una \"base canónica\" finita. Tiene una base de Hamel infinita no numerable, pero en la práctica analítica suele usarse bases ortogonales (como en series de Fourier) que generan un subespacio denso, no todo el espacio algebraicamente.",
+                subspace: "El conjunto de todas las funciones continuas que se anulan en los extremos del intervalo: $$W = \\{ f \\in C[a,b] \\mid f(a) = 0 \\text{ y } f(b) = 0 \\}$$",
+                generator: "Puesto que es de dimensión infinita, consideremos un conjunto infinito que genere todo el espacio (una base de Hamel $B$) y añadamos la función constante $f(x) = 0$. $$S = B \\cup \\{ f(x) = 0 \\}$$ Cualquier conjunto que contenga al vector nulo es Linealmente Dependiente."
+            },
+            nullspace: {
+                title: "Espacio de Soluciones (Ax = 0)",
+                notation: "$$\\text{Nul}(A) = \\{ \\vec{x} \\in \\mathbb{R}^n \\mid A\\vec{x} = \\vec{0} \\}$$",
+                dimension: "$$\\dim(\\text{Nul}(A)) = n - \\text{rango}(A)$$ (Por el Teorema del Rango-Nulidad)",
+                base: "No hay una base universal; la base depende de $A$. Se forma extrayendo los vectores resultantes al parametrizar las variables libres del sistema escalonado reducido. Supongamos que esta base es $B = \\{\\vec{v}_1, \\vec{v}_2, \\dots, \\vec{v}_k\\}$.",
+                subspace: "Si añadimos una nueva ecuación homogénea (fila adicional a la matriz $A$), digamos $\\vec{c} \\cdot \\vec{x} = 0$, el nuevo espacio de soluciones es un subespacio del espacio nulo original.",
+                generator: "Dada la base de soluciones $B = \\{\\vec{v}_1, \\vec{v}_2, \\dots, \\vec{v}_k\\}$, podemos crear el conjunto: $$S = \\{\\vec{v}_1, \\vec{v}_2, \\dots, \\vec{v}_k, \\vec{v}_1 - \\vec{v}_2\\}$$ Este conjunto genera el mismo espacio de soluciones, pero es claramente Linealmente Dependiente."
+            }
+        };
+
+        const selectElement = document.getElementById('space-select');
+        const resultCard = document.getElementById('result-card');
+        
+        // Elementos de la tarjeta
+        const els = {
+            title: document.getElementById('card-title'),
+            notation: document.getElementById('card-notation'),
+            dimension: document.getElementById('card-dimension'),
+            base: document.getElementById('card-base'),
+            subspace: document.getElementById('card-subspace'),
+            generator: document.getElementById('card-generator')
+        };
+
+        selectElement.addEventListener('change', (e) => {
+            const key = e.target.value;
+            if (spacesData[key]) {
+                const data = spacesData[key];
+                
+                // Efecto de parpadeo/fade para que el usuario note el cambio
+                resultCard.classList.remove('fade-enter-active');
+                
+                setTimeout(() => {
+                    // Actualizar textos
+                    els.title.innerHTML = data.title;
+                    els.notation.innerHTML = data.notation;
+                    els.dimension.innerHTML = data.dimension;
+                    els.base.innerHTML = data.base;
+                    els.subspace.innerHTML = data.subspace;
+                    els.generator.innerHTML = data.generator;
+
+                    // Mostrar tarjeta si estaba oculta
+                    if (resultCard.classList.contains('hidden')) {
+                        resultCard.classList.remove('hidden');
+                    }
+
+                    // Renderizar Matemáticas con KaTeX
+                    renderMathInElement(resultCard, {
+                        delimiters: [
+                            {left: '$$', right: '$$', display: true},
+                            {left: '$', right: '$', display: false}
+                        ],
+                        throwOnError: false,
+                        errorColor: '#ef4444' // red-500
+                    });
+
+                    // Reactivar animación
+                    setTimeout(() => {
+                        resultCard.classList.add('fade-enter-active');
+                    }, 50);
+
+                }, 150); // Breve retraso para transición
+            }
+        });
+    </script>
+</body>
+</html>
