@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Rotaciones 3D con Matrices</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      background: #050b18;
+      color: white;
+    }
+
+    canvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      display: block;
+    }
+
+    #ui {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      width: 380px;
+      padding: 20px;
+      background: rgba(5, 12, 30, 0.88);
+      border: 1px solid rgba(0, 255, 255, 0.45);
+      border-radius: 16px;
+      box-shadow: 0 0 25px rgba(0, 255, 255, 0.25);
+      backdrop-filter: blur(8px);
+      z-index: 10;
+    }
+
+    h1 {
+      font-size: 21px;
+      margin-top: 0;
+      color: #00eaff;
+    }
+
+    label {
+      display: block;
+      margin-top: 14px;
+      margin-bottom: 6px;
+      color: #c7f8ff;
+      font-size: 14px;
+    }
+
+    select {
+      width: 100%;
+      padding: 10px;
+      background: #07152c;
+      color: white;
+      border: 1px solid #00eaff;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+
+    #matrix {
+      margin-top: 18px;
+      padding: 14px;
+      background: rgba(0, 20, 40, 0.85);
+      border-radius: 10px;
+      border: 1px solid rgba(0, 255, 255, 0.25);
+      font-family: Consolas, monospace;
+      font-size: 15px;
+      line-height: 1.7;
+      white-space: pre;
+      color: #8ffcff;
+    }
+
+    #info {
+      position: absolute;
+      bottom: 18px;
+      right: 20px;
+      padding: 12px 16px;
+      background: rgba(5, 12, 30, 0.78);
+      border-radius: 12px;
+      border: 1px solid rgba(0, 255, 255, 0.25);
+      font-size: 13px;
+      color: #c7f8ff;
+      z-index: 10;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="scene"></canvas>
+
+  <div id="ui">
+    <h1>Rotación 3D con Matriz</h1>
+
+    <label for="axis">Eje de rotación</label>
+    <select id="axis">
+      <option value="x">Eje X</option>
+      <option value="y">Eje Y</option>
+      <option value="z">Eje Z</option>
+    </select>
+
+    <label for="angle">Ángulo</label>
+    <select id="angle">
+      <option value="-4">-2π</option>
+      <option value="-3">-3π/2</option>
+      <option value="-2">-π</option>
+      <option value="-1">-π/2</option>
+      <option value="0" selected>0</option>
+      <option value="1">π/2</option>
+      <option value="2">π</option>
+      <option value="3">3π/2</option>
+      <option value="4">2π</option>
+    </select>
+
+    <div id="matrix"></div>
+  </div>
+
+  <div id="info">
+    Arrastra con el mouse para mover la cámara.  
+    Usa scroll para acercar o alejar.
+  </div>
+
+  <script type="module">
+    import * as THREE from "https://esm.sh/three@0.165.0";
+
+    const canvas = document.getElementById("scene");
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x050b18);
+
+    const camera = new THREE.PerspectiveCamera(
+      60,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    );
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true
+    });
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
+    scene.add(ambientLight);
+
+    const directionalLight = new THREE.DirectionalLight(0x00eaff, 2.5);
+    directionalLight.position.set(4, 8, 6);
+    scene.add(directionalLight);
+
+    const pointLight = new THREE.PointLight(0xffffff, 50);
+    pointLight.position.set(-4, 5, 5);
+    scene.add(pointLight);
+
+    const grid = new THREE.GridHelper(20, 40, 0x00eaff, 0x1f3b5a);
+    grid.position.y = -1.5;
+    scene.add(grid);
+
+    const axes = new THREE.AxesHelper(4);
+    scene.add(axes);
+
+    const objectGroup = new THREE.Group();
+    scene.add(objectGroup);
+
+    function createCharacter() {
+      const character = new THREE.Group();
+
+      const cyanMaterial = new THREE.MeshStandardMaterial({
+        color: 0x00eaff,
+        emissive: 0x003344,
+        metalness: 0.25,
+        roughness: 0.35
+      });
+
+      const darkMaterial = new THREE.MeshStandardMaterial({
+        color: 0x111827,
+        metalness: 0.35,
+        roughness: 0.4
+      });
+
+      const whiteMaterial = new THREE.MeshStandardMaterial({
+        color: 0xffffff,
+        metalness: 0.1,
+        roughness: 0.25
+      });
+
+      const redMaterial = new THREE.MeshStandardMaterial({
+        color: 0xff3355,
+        emissive: 0x330008,
+        metalness: 0.2,
+        roughness: 0.35
+      });
+
+      // Cabeza
+      const head = new THREE.Mesh(
+        new THREE.SphereGeometry(0.45, 32, 32),
+        cyanMaterial
+      );
+      head.position.y = 1.45;
+      character.add(head);
+
+      // Cara / visor
+      const visor = new THREE.Mesh(
+        new THREE.BoxGeometry(0.55, 0.18, 0.08),
+        darkMaterial
+      );
+      visor.position.set(0, 1.48, 0.38);
+      character.add(visor);
+
+      // Nariz / indicador del frente
+      const nose = new THREE.Mesh(
+        new THREE.ConeGeometry(0.12, 0.35, 16),
+        redMaterial
+      );
+      nose.rotation.x = Math.PI / 2;
+      nose.position.set(0, 1.35, 0.68);
+      character.add(nose);
+
+      // Torso
+      const torso = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.45, 0.65, 1.1, 6),
+        cyanMaterial
+      );
+      torso.position.y = 0.55;
+      character.add(torso);
+
+      // Centro brillante
+      const core = new THREE.Mesh(
+        new THREE.SphereGeometry(0.16, 24, 24),
+        whiteMaterial
+      );
+      core.position.set(0, 0.75, 0.55);
+      character.add(core);
+
+      // Brazo izquierdo
+      const leftArm = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.12, 0.12, 0.9, 16),
+        cyanMaterial
+      );
+      leftArm.position.set(-0.75, 0.55, 0);
+      leftArm.rotation.z = -0.45;
+      character.add(leftArm);
+
+      // Brazo derecho levantado
+      const rightArm = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.12, 0.12, 0.95, 16),
+        cyanMaterial
+      );
+      rightArm.position.set(0.75, 0.75, 0);
+      rightArm.rotation.z = 0.9;
+      character.add(rightArm);
+
+      // Mano izquierda
+      const leftHand = new THREE.Mesh(
+        new THREE.SphereGeometry(0.16, 20, 20),
+        whiteMaterial
+      );
+      leftHand.position.set(-1.02, 0.18, 0);
+      character.add(leftHand);
+
+      // Mano derecha
+      const rightHand = new THREE.Mesh(
+        new THREE.SphereGeometry(0.16, 20, 20),
+        whiteMaterial
+      );
+      rightHand.position.set(1.08, 1.16, 0);
+      character.add(rightHand);
+
+      // Pierna izquierda
+      const leftLeg = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.15, 0.16, 0.85, 16),
+        cyanMaterial
+      );
+      leftLeg.position.set(-0.28, -0.45, 0);
+      character.add(leftLeg);
+
+      // Pierna derecha
+      const rightLeg = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.15, 0.16, 0.85, 16),
+        cyanMaterial
+      );
+      rightLeg.position.set(0.28, -0.45, 0);
+      character.add(rightLeg);
+
+      // Pie izquierdo
+      const leftFoot = new THREE.Mesh(
+        new THREE.BoxGeometry(0.38, 0.16, 0.55),
+        darkMaterial
+      );
+      leftFoot.position.set(-0.28, -0.95, 0.12);
+      character.add(leftFoot);
+
+      // Pie derecho
+      const rightFoot = new THREE.Mesh(
+        new THREE.BoxGeometry(0.38, 0.16, 0.55),
+        darkMaterial
+      );
+      rightFoot.position.set(0.28, -0.95, 0.12);
+      character.add(rightFoot);
+
+      return character;
+    }
+
+    const character = createCharacter();
+    objectGroup.add(character);
+
+    const ringX = new THREE.Mesh(
+      new THREE.TorusGeometry(1.75, 0.02, 16, 100),
+      new THREE.MeshBasicMaterial({ color: 0xff3355 })
+    );
+    ringX.rotation.y = Math.PI / 2;
+    objectGroup.add(ringX);
+
+    const ringY = new THREE.Mesh(
+      new THREE.TorusGeometry(2.0, 0.02, 16, 100),
+      new THREE.MeshBasicMaterial({ color: 0x33ff88 })
+    );
+    ringY.rotation.x = Math.PI / 2;
+    objectGroup.add(ringY);
+
+    const ringZ = new THREE.Mesh(
+      new THREE.TorusGeometry(2.25, 0.02, 16, 100),
+      new THREE.MeshBasicMaterial({ color: 0x3399ff })
+    );
+    objectGroup.add(ringZ);
+
+    const axisInput = document.getElementById("axis");
+    const angleInput = document.getElementById("angle");
+    const matrixBox = document.getElementById("matrix");
+
+    let targetRotation = {
+      x: 0,
+      y: 0,
+      z: 0
+    };
+
+    let cameraYaw = Math.PI / 4;
+    let cameraPitch = Math.PI / 5;
+    let cameraDistance = 9;
+
+    let isDragging = false;
+    let previousMouse = {
+      x: 0,
+      y: 0
+    };
+
+    function updateCamera() {
+      const x = cameraDistance * Math.sin(cameraYaw) * Math.cos(cameraPitch);
+      const y = cameraDistance * Math.sin(cameraPitch);
+      const z = cameraDistance * Math.cos(cameraYaw) * Math.cos(cameraPitch);
+
+      camera.position.set(x, y, z);
+      camera.lookAt(0, 0, 0);
+    }
+
+    canvas.addEventListener("mousedown", event => {
+      isDragging = true;
+      previousMouse.x = event.clientX;
+      previousMouse.y = event.clientY;
+    });
+
+    window.addEventListener("mouseup", () => {
+      isDragging = false;
+    });
+
+    window.addEventListener("mousemove", event => {
+      if (!isDragging) return;
+
+      const deltaX = event.clientX - previousMouse.x;
+      const deltaY = event.clientY - previousMouse.y;
+
+      cameraYaw -= deltaX * 0.006;
+      cameraPitch += deltaY * 0.006;
+
+      cameraPitch = Math.max(
+        -Math.PI / 2 + 0.1,
+        Math.min(Math.PI / 2 - 0.1, cameraPitch)
+      );
+
+      previousMouse.x = event.clientX;
+      previousMouse.y = event.clientY;
+
+      updateCamera();
+    });
+
+    canvas.addEventListener("wheel", event => {
+      cameraDistance += event.deltaY * 0.01;
+      cameraDistance = Math.max(4, Math.min(18, cameraDistance));
+      updateCamera();
+    });
+
+    function exactTrig(angle) {
+      const c = Math.cos(angle);
+      const s = Math.sin(angle);
+
+      return {
+        cos: Math.abs(c) < 0.000001 ? 0 : Math.round(c),
+        sin: Math.abs(s) < 0.000001 ? 0 : Math.round(s)
+      };
+    }
+
+    function getRotationMatrix(axis, angle) {
+      const { cos, sin } = exactTrig(angle);
+
+      if (axis === "x") {
+        return [
+          [1, 0, 0],
+          [0, cos, -sin],
+          [0, sin, cos]
+        ];
+      }
+
+      if (axis === "y") {
+        return [
+          [cos, 0, sin],
+          [0, 1, 0],
+          [-sin, 0, cos]
+        ];
+      }
+
+      if (axis === "z") {
+        return [
+          [cos, -sin, 0],
+          [sin, cos, 0],
+          [0, 0, 1]
+        ];
+      }
+    }
+
+    function formatMatrix(matrix) {
+      return matrix
+        .map(row => `[ ${row.map(value => String(value).padStart(2, " ")).join("   ")} ]`)
+        .join("\n");
+    }
+
+    function getAngleLabel(k) {
+      const labels = {
+        "-4": "-2π",
+        "-3": "-3π/2",
+        "-2": "-π",
+        "-1": "-π/2",
+        "0": "0",
+        "1": "π/2",
+        "2": "π",
+        "3": "3π/2",
+        "4": "2π"
+      };
+
+      return labels[k];
+    }
+
+    function updateRotation() {
+      const axis = axisInput.value;
+      const k = Number(angleInput.value);
+      const angle = k * Math.PI / 2;
+
+      targetRotation = {
+        x: 0,
+        y: 0,
+        z: 0
+      };
+
+      targetRotation[axis] = angle;
+
+      const matrix = getRotationMatrix(axis, angle);
+
+      matrixBox.textContent =
+`Eje seleccionado: ${axis.toUpperCase()}
+Ángulo: ${getAngleLabel(k)}
+
+Matriz de rotación:
+
+${formatMatrix(matrix)}`;
+    }
+
+    axisInput.addEventListener("change", updateRotation);
+    angleInput.addEventListener("change", updateRotation);
+
+    updateCamera();
+    updateRotation();
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      objectGroup.rotation.x += (targetRotation.x - objectGroup.rotation.x) * 0.08;
+      objectGroup.rotation.y += (targetRotation.y - objectGroup.rotation.y) * 0.08;
+      objectGroup.rotation.z += (targetRotation.z - objectGroup.rotation.z) * 0.08;
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    window.addEventListener("resize", () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>
