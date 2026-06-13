@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- KaTeX para Notación Matemática -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" xintegrity="sha384-n8MVd4RsJOPaH4zfc1h1yosO3/0LcasXz/OigM4h3LDF3oFsXG//OikSsyQ2Qf/B" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" xintegrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" xintegrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbOxyj0O1bT41BvX//fcMoE9h" crossorigin="anonymous"></script>
+  <title>Simulador básico de PageRank</title>
+
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #111827;
+      --card-soft: #1f2937;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: #38bdf8;
+      --accent-2: #22c55e;
+      --danger: #fb7185;
+      --border: rgba(255, 255, 255, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(56, 189, 248, 0.16), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(34, 197, 94, 0.12), transparent 35%),
+        var(--bg);
+      color: var(--text);
+      padding: 24px;
+    }
+
+    .app {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      gap: 20px;
+    }
+
+    header {
+      background: rgba(17, 24, 39, 0.86);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 24px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    }
+
+    header h1 {
+      font-size: clamp(1.7rem, 4vw, 3rem);
+      margin-bottom: 10px;
+      color: white;
+    }
+
+    header p {
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 900px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 20px;
+    }
+
+    .card {
+      background: rgba(17, 24, 39, 0.88);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.28);
+    }
+
+    .card h2 {
+      font-size: 1.25rem;
+      margin-bottom: 14px;
+    }
+
+    .graph-card {
+      display: grid;
+      gap: 16px;
+    }
+
+    .graph-wrapper {
+      width: 100%;
+      min-height: 380px;
+      background: linear-gradient(145deg, rgba(31, 41, 55, 0.9), rgba(15, 23, 42, 0.9));
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+      min-height: 380px;
+    }
+
+    .node circle {
+      fill: #111827;
+      stroke: var(--accent);
+      stroke-width: 4;
+      filter: drop-shadow(0 0 12px rgba(56, 189, 248, 0.45));
+      transition: r 0.3s ease;
+    }
+
+    .node text {
+      fill: white;
+      font-size: 22px;
+      font-weight: 800;
+      text-anchor: middle;
+      dominant-baseline: middle;
+    }
+
+    .rank-label {
+      fill: var(--muted);
+      font-size: 13px;
+      text-anchor: middle;
+    }
+
+    .link {
+      stroke: rgba(229, 231, 235, 0.55);
+      stroke-width: 3;
+      fill: none;
+      marker-end: url(#arrow);
+    }
+
+    .link-label {
+      fill: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    button {
+      border: none;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: #020617;
+      background: var(--accent);
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+    }
+
+    button.secondary {
+      background: var(--accent-2);
+    }
+
+    button.reset {
+      background: var(--danger);
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .metric {
+      background: var(--card-soft);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-bottom: 6px;
+    }
+
+    .metric strong {
+      font-size: 1.45rem;
+      color: white;
+    }
+
+    .tables {
+      display: grid;
+      gap: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 16px;
+      background: var(--card-soft);
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+    }
+
+    th {
+      background: rgba(56, 189, 248, 0.14);
+      color: white;
+      font-weight: 800;
+    }
+
+    td {
+      color: var(--text);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .formula {
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 16px;
+      padding: 14px;
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+
+    .history {
+      max-height: 310px;
+      overflow-y: auto;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+    }
+
+    .history table {
+      border-radius: 0;
+    }
+
+    .bar-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .bar-item {
+      display: grid;
+      gap: 6px;
+    }
+
+    .bar-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .bar-bg {
+      height: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      border-radius: 999px;
+      transition: width 0.35s ease;
+    }
+
+    @media (max-width: 900px) {
+      body {
+        padding: 16px;
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .controls,
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .graph-wrapper,
+      svg {
+        min-height: 320px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .card,
+      header {
+        padding: 16px;
+        border-radius: 18px;
+      }
+
+      th, td {
+        padding: 9px;
+        font-size: 0.85rem;
+      }
+
+      .link-label {
+        font-size: 11px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="w-full max-w-6xl mx-auto mb-8 bg-slate-900/70 backdrop-blur border border-white/10 rounded-2xl shadow-xl px-4 py-3">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <a href="index.html" class="flex items-center gap-2 font-bold text-white">
+            <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-500 text-white">↩</span>
+            Menú principal
+        </a>
+        <div class="flex flex-wrap gap-2 text-sm">
+            <a class="rounded-xl px-3 py-2 text-slate-300 hover:bg-white/10 hover:text-white transition" href="index.html">Inicio</a>
+            <a class="rounded-xl px-3 py-2 text-slate-300 hover:bg-white/10 hover:text-white transition" href="sistemas_de_ecuaciones.html">Sistemas</a>
+            <a class="rounded-xl px-3 py-2 text-slate-300 hover:bg-white/10 hover:text-white transition" href="matriz_inversa.html">Matriz inversa</a>
+            <a class="rounded-xl px-3 py-2 text-slate-300 hover:bg-white/10 hover:text-white transition" href="bases_espacios_vectoriales.html">Espacios vectoriales</a>
+            <a class="rounded-xl px-3 py-2 text-slate-300 hover:bg-white/10 hover:text-white transition"  href="espacio 3D.html">Espacio 3D</a>
+            <a class="rounded-xl px-3 py-2 bg-indigo-500 text-white font-semibold shadow-lg shadow-indigo-500/20" href="pagerank.html">Page Rank</a>
+        </div>
+    </div>
+  </nav>
+  <main class="app">
+    <header>
+      <h1>Simulador básico de PageRank</h1>
+      <p>
+        Este ejemplo calcula la relevancia de tres páginas A, B y C.
+        A enlaza a B y C; B enlaza a C; y C enlaza a A.
+        En cada paso se actualiza el vector de rankings usando la ecuación
+        <strong>r(k+1) = M · r(k)</strong>.
+      </p>
+    </header>
+
+    <section class="layout">
+      <div class="card graph-card">
+        <h2>Grafo de páginas</h2>
+
+        <div class="graph-wrapper">
+          <svg viewBox="0 0 700 430" role="img" aria-label="Grafo de PageRank con páginas A, B y C">
+            <defs>
+              <marker
+                id="arrow"
+                markerWidth="10"
+                markerHeight="10"
+                refX="8"
+                refY="3"
+                orient="auto"
+                markerUnits="strokeWidth"
+              >
+                <path d="M0,0 L0,6 L9,3 z" fill="rgba(229,231,235,0.75)" />
+              </marker>
+            </defs>
+
+            <!-- Enlaces -->
+            <path class="link" d="M220 120 C315 60, 385 60, 480 120" />
+            <text class="link-label" x="350" y="72">A → B</text>
+
+            <path class="link" d="M215 145 C180 230, 205 305, 310 330" />
+            <text class="link-label" x="205" y="255">A → C</text>
+
+            <path class="link" d="M485 145 C515 240, 470 315, 390 330" />
+            <text class="link-label" x="505" y="260">B → C</text>
+
+            <path class="link" d="M340 315 C285 250, 245 195, 220 150" />
+            <text class="link-label" x="265" y="245">C → A</text>
+
+            <!-- Nodos -->
+            <g class="node" id="nodeA" transform="translate(180,130)">
+              <circle r="42"></circle>
+              <text y="-5">A</text>
+              <text class="rank-label" id="labelA" y="34">0.3333</text>
+            </g>
+
+            <g class="node" id="nodeB" transform="translate(520,130)">
+              <circle r="42"></circle>
+              <text y="-5">B</text>
+              <text class="rank-label" id="labelB" y="34">0.3333</text>
+            </g>
+
+            <g class="node" id="nodeC" transform="translate(350,340)">
+              <circle r="42"></circle>
+              <text y="-5">C</text>
+              <text class="rank-label" id="labelC" y="34">0.3333</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="controls">
+          <button id="stepBtn">Iterar 1 vez</button>
+          <button id="autoBtn" class="secondary">Iterar 10 veces</button>
+          <button id="resetBtn" class="reset">Reiniciar</button>
+        </div>
+
+        <div class="info-grid">
+          <div class="metric">
+            <span>Iteración</span>
+            <strong id="iteration">0</strong>
+          </div>
+
+          <div class="metric">
+            <span>Mayor ranking</span>
+            <strong id="winner">A / B / C</strong>
+          </div>
+
+          <div class="metric">
+            <span>Diferencia máxima</span>
+            <strong id="delta">—</strong>
+          </div>
+        </div>
+
+        <div class="bar-list">
+          <div class="bar-item">
+            <div class="bar-top">
+              <span>Página A</span>
+              <strong id="barValueA">33.33%</strong>
+            </div>
+            <div class="bar-bg">
+              <div class="bar" id="barA"></div>
+            </div>
+          </div>
+
+          <div class="bar-item">
+            <div class="bar-top">
+              <span>Página B</span>
+              <strong id="barValueB">33.33%</strong>
+            </div>
+            <div class="bar-bg">
+              <div class="bar" id="barB"></div>
+            </div>
+          </div>
+
+          <div class="bar-item">
+            <div class="bar-top">
+              <span>Página C</span>
+              <strong id="barValueC">33.33%</strong>
+            </div>
+            <div class="bar-bg">
+              <div class="bar" id="barC"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="tables">
+        <div class="card">
+          <h2>Matriz de transición M</h2>
+
+          <table>
+            <thead>
+              <tr>
+                <th></th>
+                <th>A</th>
+                <th>B</th>
+                <th>C</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>A</th>
+                <td>0</td>
+                <td>0</td>
+                <td>1</td>
+              </tr>
+              <tr>
+                <th>B</th>
+                <td>1/2</td>
+                <td>0</td>
+                <td>0</td>
+              </tr>
+              <tr>
+                <th>C</th>
+                <td>1/2</td>
+                <td>1</td>
+                <td>0</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <h2>Fórmula aplicada</h2>
+
+          <div class="formula">
+            <p>
+              Vector inicial:
+              <strong>r(0) = (1/3, 1/3, 1/3)</strong>
+            </p>
+            <p>
+              En cada iteración:
+              <strong>r(k+1) = M · r(k)</strong>
+            </p>
+            <p>
+              Con esta matriz:
+              <br />
+              A recibe ranking desde C.
+              <br />
+              B recibe la mitad del ranking de A.
+              <br />
+              C recibe la mitad del ranking de A más todo el ranking de B.
+            </p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Historial de iteraciones</h2>
+
+          <div class="history">
+            <table>
+              <thead>
+                <tr>
+                  <th>k</th>
+                  <th>A</th>
+                  <th>B</th>
+                  <th>C</th>
+                </tr>
+              </thead>
+              <tbody id="historyBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const M = [
+      [0,   0, 1],
+      [0.5, 0, 0],
+      [0.5, 1, 0]
+    ];
+
+    const initialRank = [1 / 3, 1 / 3, 1 / 3];
+
+    let rank = [...initialRank];
+    let previousRank = [...initialRank];
+    let iteration = 0;
+
+    const elements = {
+      iteration: document.getElementById("iteration"),
+      winner: document.getElementById("winner"),
+      delta: document.getElementById("delta"),
+
+      labelA: document.getElementById("labelA"),
+      labelB: document.getElementById("labelB"),
+      labelC: document.getElementById("labelC"),
+
+      nodeA: document.querySelector("#nodeA circle"),
+      nodeB: document.querySelector("#nodeB circle"),
+      nodeC: document.querySelector("#nodeC circle"),
+
+      barA: document.getElementById("barA"),
+      barB: document.getElementById("barB"),
+      barC: document.getElementById("barC"),
+
+      barValueA: document.getElementById("barValueA"),
+      barValueB: document.getElementById("barValueB"),
+      barValueC: document.getElementById("barValueC"),
+
+      historyBody: document.getElementById("historyBody"),
+
+      stepBtn: document.getElementById("stepBtn"),
+      autoBtn: document.getElementById("autoBtn"),
+      resetBtn: document.getElementById("resetBtn")
+    };
+
+    function multiplyMatrixVector(matrix, vector) {
+      return matrix.map(row =>
+        row.reduce((sum, value, index) => sum + value * vector[index], 0)
+      );
+    }
+
+    function formatNumber(value) {
+      return value.toFixed(6);
+    }
+
+    function formatPercent(value) {
+      return `${(value * 100).toFixed(2)}%`;
+    }
+
+    function getWinner(vector) {
+      const labels = ["A", "B", "C"];
+      const max = Math.max(...vector);
+
+      return labels
+        .filter((_, index) => Math.abs(vector[index] - max) < 0.000001)
+        .join(" / ");
+    }
+
+    function getMaxDelta(current, previous) {
+      const differences = current.map((value, index) => Math.abs(value - previous[index]));
+      return Math.max(...differences);
+    }
+
+    function updateNodeSizes() {
+      const minRadius = 34;
+      const maxRadius = 62;
+
+      const maxRank = Math.max(...rank);
+      const minRank = Math.min(...rank);
+
+      const normalize = value => {
+        if (maxRank === minRank) return 42;
+        return minRadius + ((value - minRank) / (maxRank - minRank)) * (maxRadius - minRadius);
+      };
+
+      elements.nodeA.setAttribute("r", normalize(rank[0]));
+      elements.nodeB.setAttribute("r", normalize(rank[1]));
+      elements.nodeC.setAttribute("r", normalize(rank[2]));
+    }
+
+    function addHistoryRow() {
+      const row = document.createElement("tr");
+
+      row.innerHTML = `
+        <td>${iteration}</td>
+        <td>${formatNumber(rank[0])}</td>
+        <td>${formatNumber(rank[1])}</td>
+        <td>${formatNumber(rank[2])}</td>
+      `;
+
+      elements.historyBody.prepend(row);
+    }
+
+    function render() {
+      elements.iteration.textContent = iteration;
+      elements.winner.textContent = getWinner(rank);
+
+      const delta = iteration === 0 ? null : getMaxDelta(rank, previousRank);
+      elements.delta.textContent = delta === null ? "—" : delta.toFixed(8);
+
+      elements.labelA.textContent = formatNumber(rank[0]);
+      elements.labelB.textContent = formatNumber(rank[1]);
+      elements.labelC.textContent = formatNumber(rank[2]);
+
+      elements.barA.style.width = formatPercent(rank[0]);
+      elements.barB.style.width = formatPercent(rank[1]);
+      elements.barC.style.width = formatPercent(rank[2]);
+
+      elements.barValueA.textContent = formatPercent(rank[0]);
+      elements.barValueB.textContent = formatPercent(rank[1]);
+      elements.barValueC.textContent = formatPercent(rank[2]);
+
+      updateNodeSizes();
+    }
+
+    function iterateOnce() {
+      previousRank = [...rank];
+      rank = multiplyMatrixVector(M, rank);
+      iteration += 1;
+
+      render();
+      addHistoryRow();
+    }
+
+    function iterateMany(times) {
+      for (let i = 0; i < times; i++) {
+        iterateOnce();
+      }
+    }
+
+    function resetSimulation() {
+      rank = [...initialRank];
+      previousRank = [...initialRank];
+      iteration = 0;
+      elements.historyBody.innerHTML = "";
+
+      render();
+      addHistoryRow();
+    }
+
+    elements.stepBtn.addEventListener("click", () => {
+      iterateOnce();
+    });
+
+    elements.autoBtn.addEventListener("click", () => {
+      iterateMany(10);
+    });
+
+    elements.resetBtn.addEventListener("click", () => {
+      resetSimulation();
+    });
+
+    resetSimulation();
+  </script>
+</body>
+</html>
