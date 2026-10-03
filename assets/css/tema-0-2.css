@@ -53,7 +53,6 @@
     margin:7px 0 0;color:var(--seg02-muted);font-size:clamp(.88rem,1.2vw,1rem)
   }
   .seg02-close{
-    width:46px;height:46px;border-radius:50%;border:1px solid rgba(143,240,230,.24);
     color:#fff;background:rgba(9,30,31,.76);display:grid;place-items:center;font-size:1.5rem;
     transition:.25s var(--seg02-ease);padding:0;
   }

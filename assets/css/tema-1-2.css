@@ -1,0 +1,7 @@
+/* Tema 1.2 · Clasificación por objetivo */
+#tema12Overlay{--u1-accent:#60a5fa;--u1-accent-2:#a78bfa;--u1-accent-rgb:96,165,250}
+#tema12Overlay .rule-tree{display:grid;gap:10px;justify-items:center;padding:18px}
+#tema12Overlay .rule-level{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;width:100%}
+#tema12Overlay .rule-node{min-width:165px;padding:13px 14px;border-radius:15px;text-align:center;background:#08141d;border:1px solid rgba(96,165,250,.20)}
+#tema12Overlay .rule-connector{height:24px;width:2px;background:linear-gradient(#60a5fa,transparent)}
+#tema12Overlay .gen-pulse{animation:tema12Pulse 2s ease-in-out infinite}@keyframes tema12Pulse{50%{box-shadow:0 0 0 10px rgba(96,165,250,0),0 0 30px rgba(96,165,250,.3)}}

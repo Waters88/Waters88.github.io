@@ -1,0 +1,9 @@
+/* Tema 1.4 · Disciplinas que dan vida a la IA */
+#tema14Overlay{--u1-accent:#f59e0b;--u1-accent-2:#2dd4bf;--u1-accent-rgb:245,158,11}
+#tema14Overlay .u1-discipline:nth-child(2n){transform:translateY(8px)}
+#tema14Overlay .u1-discipline:hover{transform:translateY(-6px)}
+#tema14Overlay .discipline-orbit{position:relative;min-height:420px;display:grid;place-items:center}
+#tema14Overlay .discipline-orbit-core{width:150px;height:150px;border-radius:50%;display:grid;place-items:center;text-align:center;background:radial-gradient(circle,#1d3b3a,#071314 68%);border:1px solid rgba(245,158,11,.24);box-shadow:0 0 45px rgba(245,158,11,.13);z-index:2}
+#tema14Overlay .discipline-orbit-core i{font-size:2.4rem;color:#fbbf24}.discipline-orbit-core strong{display:block;margin-top:5px}
+#tema14Overlay .orbit-item{position:absolute;width:145px;padding:12px;border-radius:16px;text-align:center;background:#071416;border:1px solid rgba(245,158,11,.15);animation:tema14Float 4s ease-in-out infinite}.orbit-item i{display:block;color:#fbbf24;margin-bottom:6px}.orbit-item:nth-child(2){top:4%;left:16%}.orbit-item:nth-child(3){top:4%;right:16%;animation-delay:.5s}.orbit-item:nth-child(4){bottom:4%;left:12%;animation-delay:1s}.orbit-item:nth-child(5){bottom:4%;right:12%;animation-delay:1.5s}@keyframes tema14Float{50%{transform:translateY(-8px)}}
+@media(max-width:720px){#tema14Overlay .discipline-orbit{display:none}}

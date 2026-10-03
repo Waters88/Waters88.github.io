@@ -475,8 +475,6 @@
   background:
     linear-gradient(100deg, rgba(20,184,166,.13), transparent 58%),
     radial-gradient(circle at 88% 50%, rgba(103,232,249,.09), transparent 30%);
-    /*radial-gradient(circle at 25% 20%, rgba(20,184,166,.6), transparent 36%),
-    linear-gradient(135deg, #082d2c 0%, #071011 62%, #020304 100%);*/
 }
 .ia-culture-card::after {
   content:"";

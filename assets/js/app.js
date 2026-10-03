@@ -36,31 +36,56 @@ const courseData = [
       {
         unit: "Unidad 1",
         title: "Taxonomía de la IA: tipos, enfoques y origen",
-        icon: "fa-robot",
+        icon: "fa-diagram-project",
         topics: [
           {
             title: "Clasificación por nivel de autonomía",
-            description: "Tipos de inteligencia artificial por Nivel de Análisis y Autonomía",
-            progress: 45,
-            segmentOpen: "openTema01Segment",
+            description: "Distingue IA predictiva, prescriptiva y agéntica mediante definiciones, diagramas, gráficas y un simulador de agente.",
+            progress: 42,
+            segmentOpen: "openTema11Segment",
             cards: [
-              { label: "Subtema 1", title: "IA predictiva", text: "Modelos que analizan datos históricos para identificar patrones y pronosticar qué es lo que probablemente pasará.", bullets: ["Machine learning", "Aprendizaje supervisado", "Aprendizaje NO supervisado"], slideIndex: 0 },
-              { label: "Subtema 2", title: "IA prescriptiva", text: "Modelos avanzados que no solo predicen el futuro, sino que sugieren las mejores acciones a tomar para optimizar un resultado específico.", bullets: ["Optimización", "Simulación", "Aprendizaje por refuerzo"], slideIndex: 1 },
-              { label: "Subtema 3", title: "IA agéntica", text: "Sistemas autónomos (agentes) capaces de planificar, tomar decisiones en varios pasos y usar herramientas para cumplir un objetivo sin supervisión constante.", bullets: ["Agentes de IA", "Componentes", "Nuevo paradigma"], slideIndex: 2 },
-              { label: "Quiz", title: "Cuestionario", text: "Comprueba los conceptos principales con cinco preguntas y retroalimentación inmediata.", bullets: ["Opción única", "Selección múltiple", "Verdadero o falso"], slideIndex: 3 }
+              { label: "1.1.1", title: "IA predictiva", text: "Modelos que analizan datos históricos para identificar patrones y pronosticar resultados probables.", bullets: ["Machine Learning", "Supervisado", "No supervisado"], slideIndex: 0 },
+              { label: "1.1.2", title: "IA prescriptiva", text: "Modelos que combinan predicción, objetivos y restricciones para sugerir acciones que optimizan un resultado.", bullets: ["Optimización", "Simulación", "Aprendizaje por refuerzo"], slideIndex: 1 },
+              { label: "1.1.3", title: "IA agéntica", text: "Sistemas orientados a objetivos capaces de planificar varios pasos, usar herramientas y observar resultados.", bullets: ["Agentes de IA", "Componentes", "Nuevo paradigma"], slideIndex: 2 },
+              { label: "1.1.4", title: "Cuestionario", text: "Comprueba los conceptos principales con cinco preguntas y retroalimentación inmediata.", bullets: ["Opción única", "Selección múltiple", "Verdadero o falso"], slideIndex: 3 }
             ]
           },
           {
-            title: "Historia, ejemplos y panorama general",
-            description: "Recorre la evolución de la IA, identifica usos cotidianos, compara herramientas y empresas, y revisa casos relevantes en industria, educación y ciencia.",
-            progress: 60,
-            segmentOpen: "openTema02Segment",
+            title: "Clasificación por objetivo",
+            description: "Compara IA discriminativa, sistemas basados en reglas e IA generativa, incluyendo aprendizaje supervisado/no supervisado y LLM.",
+            progress: 52,
+            segmentOpen: "openTema12Segment",
             cards: [
-              { label: "Subtema 1", title: "Evolución histórica", text: "Una línea de tiempo vertical e interactiva recorre los hitos, personajes y cambios tecnológicos que marcaron la historia de la IA.", bullets: ["Hitos y personajes", "Modelos y arquitecturas", "Historia hacia 2026"], slideIndex: 0 },
-              { label: "Subtema 2", title: "Ejemplos cotidianos", text: "Registra cómo utilizas la IA, qué herramientas conoces y qué empresas identificas en el ecosistema actual.", bullets: ["Usos diarios", "Herramientas", "Empresas"], slideIndex: 1 },
-              { label: "Subtema 3", title: "Principales herramientas y empresas de IA", text: "Compara capacidades y complementos de las principales plataformas y actores de IA.", bullets: ["Matriz de capacidades", "Matriz de complementos", "Plataformas"], slideIndex: 2 },
-              { label: "Subtema 4", title: "Casos relevantes", text: "Explora casos de éxito representativos de la IA en industria, educación y ciencia.", bullets: ["Industria", "Educación", "Ciencia"], slideIndex: 3 },
-              { label: "Quiz", title: "Cuestionario", text: "Evalúa lo aprendido con cinco preguntas interactivas de distintos formatos.", bullets: ["Historia", "Herramientas y empresas", "Casos de éxito"], slideIndex: 4 }
+              { label: "1.2.1", title: "IA discriminativa", text: "Modelos que distinguen, clasifican o etiquetan datos existentes y relaciones entre ellos.", bullets: ["Machine Learning", "Supervisado", "No supervisado"], slideIndex: 0 },
+              { label: "1.2.2", title: "IA basada en reglas", text: "Sistemas que ejecutan lógica humana preprogramada del tipo si X, entonces Y.", bullets: ["Lógica", "Reglas", "Toma de decisiones"], slideIndex: 1 },
+              { label: "1.2.3", title: "IA generativa (GenIA)", text: "Modelos entrenados para producir contenido nuevo a partir de patrones aprendidos y contexto.", bullets: ["GenIA", "LLM", "Prompt"], slideIndex: 2 },
+              { label: "1.2.4", title: "Cuestionario", text: "Comprueba los conceptos principales con cinco preguntas y retroalimentación inmediata.", bullets: ["Opción única", "Selección múltiple", "Verdadero o falso"], slideIndex: 3 }
+            ]
+          },
+          {
+            title: "Clasificación por nivel de capacidad",
+            description: "Explora IA débil/fuerte y la escala ANI, AGI y ASI, distinguiendo capacidades actuales de categorías hipotéticas.",
+            progress: 62,
+            segmentOpen: "openTema13Segment",
+            cards: [
+              { label: "1.3.1", title: "IA débil", text: "Sistemas diseñados para tareas específicas y acotadas.", bullets: ["Débil", "Acotada", "Actualidad"], slideIndex: 0 },
+              { label: "1.3.2", title: "IA fuerte", text: "Concepto teórico de una IA con capacidades cognitivas generales comparables a las humanas.", bullets: ["Fuerte", "Razonamiento", "Futuro"], slideIndex: 1 },
+              { label: "1.3.3", title: "ANI · IA Estrecha", text: "IA especializada en tareas o dominios delimitados, como traducción, voz o lenguaje.", bullets: ["Traductores", "Asistentes de voz", "LLM"], slideIndex: 2 },
+              { label: "1.3.4", title: "AGI · IA General", text: "Hipótesis de una IA capaz de aprender y transferir habilidades en una amplia variedad de tareas intelectuales.", bullets: ["General", "Humana", "Hipotética"], slideIndex: 3 },
+              { label: "1.3.5", title: "ASI · Superinteligencia", text: "Concepto teórico de una inteligencia que superaría ampliamente las capacidades humanas generales.", bullets: ["Superinteligencia", "Automejora", "Teoría"], slideIndex: 4 },
+              { label: "1.3.6", title: "Cuestionario", text: "Comprueba los conceptos principales con cinco preguntas y retroalimentación inmediata.", bullets: ["ANI", "AGI", "ASI"], slideIndex: 5 }
+            ]
+          },
+          {
+            title: "¿Qué disciplinas dan vida a la Inteligencia Artificial?",
+            description: "Relaciona Humanidades, Ciencias Biológicas, Ciencias Exactas e Ingenierías con la construcción y comprensión de la IA.",
+            progress: 72,
+            segmentOpen: "openTema14Segment",
+            cards: [
+              { label: "1.4.1", title: "Disciplinas que construyen la IA", text: "Mapa de las principales disciplinas que aportan ideas, métodos y tecnología a la IA.", bullets: ["Ciencias", "Humanidades", "Conocimiento"], slideIndex: 0 },
+              { label: "1.4.2", title: "Humanidades y Ciencias Biológicas", text: "Aportes de filosofía, psicologías, lingüística, biología y neurociencia.", bullets: ["Filosofía", "Biología", "Psicología"], slideIndex: 1 },
+              { label: "1.4.3", title: "Ciencias Exactas e Ingeniería", text: "Aportes de matemáticas, teoría de juegos, computación, datos, cibernética y robótica.", bullets: ["Matemáticas", "Computación", "Robótica"], slideIndex: 2 },
+              { label: "1.4.4", title: "Cuestionario", text: "Comprueba los conceptos principales con cinco preguntas y retroalimentación inmediata.", bullets: ["Opción única", "Selección múltiple", "Verdadero o falso"], slideIndex: 3 }
             ]
           }
         ]

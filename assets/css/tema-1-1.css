@@ -1,0 +1,9 @@
+/* Tema 1.1 · Clasificación por nivel de autonomía */
+#tema11Overlay{--u1-accent:#2dd4bf;--u1-accent-2:#60a5fa;--u1-accent-rgb:45,212,191}
+#tema11Overlay .agent-loop{display:grid;grid-template-columns:repeat(5,minmax(120px,1fr));gap:12px;align-items:stretch}
+#tema11Overlay .agent-step{padding:17px;text-align:center;min-height:145px;display:grid;place-items:center;align-content:center;gap:8px}
+#tema11Overlay .agent-step i{font-size:1.5rem;color:var(--u1-accent)}
+#tema11Overlay .agent-step small{color:var(--u1-muted);line-height:1.45}
+#tema11Overlay .agent-step::before{content:attr(data-step);position:absolute;top:10px;left:12px;color:#60817e;font-size:.68rem;font-weight:900}
+#tema11Overlay .rl-path{stroke-dasharray:8 8;animation:tema11Dash 2.4s linear infinite}@keyframes tema11Dash{to{stroke-dashoffset:-32}}
+@media(max-width:900px){#tema11Overlay .agent-loop{grid-template-columns:1fr}}

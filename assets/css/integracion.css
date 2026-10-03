@@ -1,5 +1,5 @@
 /* =========================================================
-   INTEGRACIÓN UNIDAD 0 · estilos puente
+   INTEGRACIÓN UNIDADES 0–1 · estilos puente
    Mantiene el curso original y encapsula los segmentos.
    ========================================================= */
 body.topic-segment-open { overflow: hidden !important; }
@@ -12,7 +12,6 @@ body.topic-segment-open { overflow: hidden !important; }
 }
 #ia-topic-segment .ia-seg-close:hover{
   background:rgb(0, 184, 169);transform:rotate(360deg);
-  /*background:rgba(24,199,183,.18);transform:rotate(360deg);*/
 }
 
 /* Variables del footer/quiz Tema 0.2 disponibles también en Tema 0.1 */
@@ -134,3 +133,8 @@ body.topic-segment-open .snow-canvas{
   #seg02Overlay .seg02-unified-header{padding-top:12px;}
   #seg02Overlay .ia-seg-eyebrow{display:none;}
 }
+
+/* Unidad 1 reutiliza body.topic-segment-open y el mismo canvas de nieve.
+   Sus overlays se mantienen por debajo de .snow-canvas para conservar el efecto visual. */
+.u1-overlay{z-index:99999;}
+body.topic-segment-open .u1-overlay{overscroll-behavior:contain;}
