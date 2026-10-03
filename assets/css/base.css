@@ -386,11 +386,16 @@
       transform: translateX(4px);
     }
 
-    .topic-link i {
+    .topic-link .unit-bullet {
       color: var(--teal-400);
       width: 20px;
       text-align: center;
     }
+
+    .unit:nth-child(2) .unit-bullet { color: var(--violet); }
+    .unit:nth-child(3) .unit-bullet { color: var(--blue); }
+    .unit:nth-child(4) .unit-bullet { color: var(--amber); }
+    .unit:nth-child(5) .unit-bullet { color: var(--pink); }
 
     body.sidebar-collapsed .sidebar-title,
     body.sidebar-collapsed .unit-name,
@@ -855,8 +860,8 @@
       transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
     }
 
-    .syllabus-module:nth-child(2) { --module-accent: var(--blue); --module-accent-rgb: 96, 165, 250; }
-    .syllabus-module:nth-child(3) { --module-accent: var(--violet); --module-accent-rgb: 167, 139, 250; }
+    .syllabus-module:nth-child(2) { --module-accent: var(--violet); --module-accent-rgb: 96, 165, 250; }
+    .syllabus-module:nth-child(3) { --module-accent: var(--blue); --module-accent-rgb: 167, 139, 250; }
     .syllabus-module:nth-child(4) { --module-accent: var(--amber); --module-accent-rgb: 245, 158, 11; }
     .syllabus-module:nth-child(5) { --module-accent: var(--pink); --module-accent-rgb: 244, 114, 182; }
 
@@ -1427,7 +1432,7 @@
       gap: 14px;
     }
 
-    .resource-card i {
+    .resource-card .icon {
       width: 46px;
       height: 46px;
       border-radius: 16px;
@@ -1437,15 +1442,15 @@
       background: linear-gradient(135deg, var(--teal-200), var(--teal-600));
     }
 
-    .resource-card:nth-child(2) i {
+    .resource-card:nth-child(2) .icon {
       background: linear-gradient(135deg, var(--teal-200), var(--violet));
     }
 
-    .resource-card:nth-child(3) i {
+    .resource-card:nth-child(3) .icon {
       background: linear-gradient(135deg, var(--teal-200), var(--blue));
     }
 
-    .resource-card:nth-child(4) i {
+    .resource-card:nth-child(4) .icon {
       background: linear-gradient(135deg, var(--teal-200), var(--amber));
     }
 
@@ -1463,6 +1468,16 @@
       width: auto;
       height: auto;
       background: none;
+    }
+
+    .resource-card:nth-child(2) .arrow {
+      color: var(--violet);
+    }
+    .resource-card:nth-child(3) .arrow {
+      color: var(--blue);
+    }
+    .resource-card:nth-child(4) .arrow {
+      color: var(--amber);
     }
 
     /* PROYECTO */
