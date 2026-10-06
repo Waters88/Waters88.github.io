@@ -14,20 +14,28 @@ curso_IA_C_modular/
     │   ├── tema-0-1.css
     │   ├── tema-0-2.css
     │   ├── unidad-1.css
+│   ├── unidad-2.css
     │   ├── tema-1-1.css
     │   ├── tema-1-2.css
     │   ├── tema-1-3.css
     │   ├── tema-1-4.css
+│   ├── tema-2-1.css
+│   ├── tema-2-2.css
+│   ├── tema-2-3.css
     │   └── integracion.css
     ├── js/
     │   ├── tailwind-config.js
     │   ├── tema-0-1.js
     │   ├── tema-0-2.js
     │   ├── unidad-1-shared.js
+│   ├── unidad-2-shared.js
     │   ├── tema-1-1.js
     │   ├── tema-1-2.js
     │   ├── tema-1-3.js
     │   ├── tema-1-4.js
+│   ├── tema-2-1.js
+│   ├── tema-2-2.js
+│   ├── tema-2-3.js
     │   └── app.js
     └── images/
         └── README.txt
@@ -42,7 +50,7 @@ curso_IA_C_modular/
 - `integracion.css`: reglas que conectan los segmentos con el curso principal, incluida la superposición de nieve y correcciones de la línea de tiempo.
 - `tema-0-1.js`: carrusel, actividades, almacenamiento y cuestionario del Tema 0.1.
 - `tema-0-2.js`: carrusel, matrices, casos, cuestionario y comportamiento de la línea de tiempo del Tema 0.2.
-- `app.js`: datos de las Unidades 0 y 1, navegación general, carrusel del curso, tema claro/oscuro y efecto de nieve.
+- `app.js`: datos de las Unidades 0, 1 y 2, navegación general, carrusel del curso, tema claro/oscuro y efecto de nieve. Incluye el control para activar/desactivar la animación y conserva la preferencia en el navegador.
 - `tailwind-config.js`: configuración usada por Tailwind CDN para evitar `preflight`.
 
 ## Uso
@@ -50,6 +58,7 @@ curso_IA_C_modular/
 1. Descomprime el ZIP.
 2. Abre `index.html` en un navegador moderno.
 3. Para desarrollo es recomendable servir la carpeta con un servidor local (por ejemplo Live Server), aunque la estructura evita depender de `fetch` para los temas.
+4. En la cabecera principal, usa el botón con el icono de copo de nieve para activar o desactivar la animación.
 
 ## Dependencias externas
 
@@ -80,3 +89,17 @@ La Unidad 1 se divide en cuatro segmentos modulares:
 - `tema-1-4.css/js`: disciplinas — Humanidades, Ciencias Biológicas, Ciencias Exactas e Ingenierías.
 
 Los simuladores no ejecutan modelos de IA: son demostraciones locales en JavaScript para fines didácticos.
+
+
+## Unidad 2 agregada
+
+La Unidad 2, **Machine Learning y Deep Learning**, se integra con el mismo patrón de carrusel a pantalla completa utilizado por la Unidad 1:
+
+- `assets/css/unidad-2.css` y `assets/js/unidad-2-shared.js`: sistema visual, carrusel, barra de progreso, navegación, destinos de laboratorio y cuestionarios.
+- `tema-2-1.css/js`: fundamentos de ML, tipos de aprendizaje, flujo básico y quiz.
+- `tema-2-2.css/js`: regresión, clasificación, métricas de desempeño y quiz.
+- `tema-2-3.css/js`: clustering, reglas de asociación, reducción de dimensionalidad, métricas y quiz.
+- `index.html`: contiene los overlays y diagramas SVG/HTML de la Unidad 2.
+- `app.js`: registra Unidad 2 en el menú lateral, temario, portada y carrusel de subtemas.
+
+Los botones de Data Science están preparados como CTA visuales sin enlace definitivo. Los enlaces de laboratorio apuntan a la sección Laboratorio, que queda como placeholder para integrar notebooks y simuladores posteriormente.

@@ -198,6 +198,43 @@
       opacity: .65;
     }
 
+    .snow-toggle {
+      width: 42px;
+      height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      color: var(--muted);
+      background: var(--chip);
+      transition: var(--transition);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, .12);
+    }
+
+    .snow-toggle:hover {
+      transform: translateY(-1px);
+      border-color: rgba(45, 212, 191, .42);
+      color: var(--text);
+    }
+
+    .snow-toggle.is-active {
+      color: #ecfeff;
+      border-color: rgba(45, 212, 191, .5);
+      background: linear-gradient(135deg, rgba(13, 148, 136, .92), rgba(15, 23, 42, .96));
+      box-shadow: 0 8px 22px rgba(20, 184, 166, .24);
+    }
+
+    html[data-theme="light"] .snow-toggle.is-active {
+      color: #083344;
+      background: linear-gradient(135deg, rgba(153, 246, 228, .96), rgba(45, 212, 191, .9));
+    }
+
+    .snow-toggle:focus-visible {
+      outline: 3px solid rgba(45, 212, 191, .32);
+      outline-offset: 3px;
+    }
+
     .theme-toggle {
       position: relative;
       border: 0;

@@ -90,6 +90,50 @@ const courseData = [
           }
         ]
       }
+      ,{
+        unit: "Unidad 2",
+        title: "Machine Learning y Deep Learning",
+        icon: "fa-network-wired",
+        topics: [
+          {
+            title: "Fundamentos de aprendizaje automático",
+            description: "Comprende qué es Machine Learning, sus principales tipos de aprendizaje y el flujo básico desde los datos hasta el despliegue.",
+            progress: 80,
+            segmentOpen: "openTema21Segment",
+            cards: [
+              { label: "Subtema 1", title: "Definición de ML", text: "Permite a las computadoras aprender de los datos y tomar decisiones sin necesidad de ser programadas explícitamente para cada tarea.", bullets: ["Machine Learning", "Big Data", "Data Science"], slideIndex: 0 },
+              { label: "Subtema 2", title: "Tipos de aprendizaje", text: "Supervisado, no supervisado, semisupervisado y por refuerzo: cuatro paradigmas para aprender de datos y experiencia.", bullets: ["Supervisado y NO Supervisado", "Semisupervisado", "Por Refuerzo"], slideIndex: 1 },
+              { label: "Subtema 3", title: "Flujo básico de ML", text: "Proceso secuencial desde la definición del problema y los datos hasta el despliegue y monitoreo del modelo.", bullets: ["Input / Output", "Modelo", "Parámetro"], slideIndex: 2 },
+              { label: "Quiz", title: "Cuestionario", text: "Comprueba los conceptos principales con cinco preguntas y retroalimentación inmediata.", bullets: ["Opción única", "Selección múltiple", "Verdadero o falso"], slideIndex: 3 }
+            ]
+          },
+          {
+            title: "Aprendizaje supervisado",
+            description: "Explora regresión, clasificación y las métricas esenciales para medir el desempeño de modelos supervisados.",
+            progress: 90,
+            segmentOpen: "openTema22Segment",
+            cards: [
+              { label: "Subtema 1", title: "Regresión", text: "Predice un valor numérico continuo a partir de variables de entrada.", bullets: ["Regresión Lineal, No Lineal y Polinómica", "Árboles y Bosques", "SVR"], slideIndex: 0 },
+              { label: "Subtema 2", title: "Clasificación", text: "Predice una etiqueta, categoría o clase específica de forma automática.", bullets: ["Regresión Logística", "KNN", "SVM y Naive Bayes"], slideIndex: 1 },
+              { label: "Subtema 3", title: "Evaluación de desempeño", text: "Selecciona métricas de regresión o clasificación según el tipo de error y objetivo del problema.", bullets: ["MAE, MSE, RMSE, MAPE, R²", "Matriz de confusión", "Precision, Recall, F1, ROC-AUC"], slideIndex: 2 },
+              { label: "Quiz", title: "Cuestionario", text: "Comprueba los conceptos principales con cinco preguntas y retroalimentación inmediata.", bullets: ["Opción única", "Selección múltiple", "Verdadero o falso"], slideIndex: 3 }
+            ]
+          },
+          {
+            title: "Aprendizaje NO supervisado",
+            description: "Aprende a descubrir grupos, asociaciones y representaciones compactas cuando no existe una etiqueta objetivo explícita.",
+            progress: 100,
+            segmentOpen: "openTema23Segment",
+            cards: [
+              { label: "Subtema 1", title: "Agrupamiento (Clustering)", text: "Junta los datos en grupos según su parecido y permite descubrir segmentos ocultos.", bullets: ["K-Means", "DBSCAN", "Jerárquico", "GMM"], slideIndex: 0 },
+              { label: "Subtema 2", title: "Reglas de asociación", text: "Encuentra reglas para saber qué elementos ocurren juntos con frecuencia.", bullets: ["Apriori", "FP-Growth", "ECLAT"], slideIndex: 1 },
+              { label: "Subtema 3", title: "Reducción de dimensionalidad", text: "Simplifica datos con muchas variables intentando conservar su información clave.", bullets: ["PCA", "t-SNE", "UMAP", "Autoencoders"], slideIndex: 2 },
+              { label: "Subtema 4", title: "Evaluación de desempeño", text: "Evalúa clustering, reglas de asociación y reducción de dimensionalidad con métricas específicas.", bullets: ["Silhouette Score", "Support / Lift", "Explained Variance"], slideIndex: 3 },
+              { label: "Quiz", title: "Cuestionario", text: "Comprueba los conceptos principales con cinco preguntas y retroalimentación inmediata.", bullets: ["Opción única", "Selección múltiple", "Verdadero o falso"], slideIndex: 4 }
+            ]
+          }
+        ]
+      }
       // Para futuras unidades: agrega otro objeto con topics que definan `segmentOpen`
       // y, en cada tarjeta, `slideIndex`. No se requiere reactivar contenido genérico.
     ];
@@ -390,6 +434,8 @@ const courseData = [
       }
     }
 
+    window.openCourseSection = setSection;
+
     function updateHeroVisibility() {
       hero.classList.toggle("show", currentSection === "curso");
     }
@@ -476,17 +522,26 @@ const courseData = [
 
     function initSnowfall() {
       const canvas = document.getElementById("snowCanvas");
+      const toggle = document.getElementById("snowToggle");
       if (!canvas) return;
 
       const context = canvas.getContext("2d");
       if (!context) return;
 
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+      const storageKey = "courseSnowEnabled";
       let flakes = [];
       let width = 0;
       let height = 0;
       let animationFrame = null;
       let running = false;
+      let snowEnabled = true;
+
+      try {
+        snowEnabled = localStorage.getItem(storageKey) !== "false";
+      } catch (_) {
+        snowEnabled = true;
+      }
 
       const createFlake = (randomY = true) => ({
         x: Math.random() * width,
@@ -498,6 +553,24 @@ const courseData = [
         phase: Math.random() * Math.PI * 2,
         opacity: 0.16 + Math.random() * 0.34
       });
+
+      function clearSnow() {
+        context.clearRect(0, 0, width, height);
+      }
+
+      function updateSnowToggle() {
+        if (!toggle) return;
+        toggle.classList.toggle("is-active", snowEnabled);
+        toggle.setAttribute("aria-pressed", String(snowEnabled));
+        toggle.setAttribute(
+          "aria-label",
+          snowEnabled ? "Desactivar animación de nieve" : "Activar animación de nieve"
+        );
+        toggle.title = snowEnabled ? "Desactivar nieve" : "Activar nieve";
+        toggle.innerHTML = snowEnabled
+          ? '<i class="fa-solid fa-snowflake" aria-hidden="true"></i>'
+          : '<i class="fa-solid fa-snowflake" aria-hidden="true" style="opacity:.35"></i>';
+      }
 
       function resizeSnowCanvas() {
         const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
@@ -511,11 +584,14 @@ const courseData = [
 
         const density = reducedMotion.matches ? 18 : (width < 720 ? 54 : 86);
         flakes = Array.from({ length: density }, () => createFlake(true));
-        drawSnow(false);
+        if (snowEnabled) drawSnow(false);
+        else clearSnow();
       }
 
       function drawSnow(update = true) {
-        context.clearRect(0, 0, width, height);
+        clearSnow();
+        if (!snowEnabled) return;
+
         context.fillStyle = document.documentElement.dataset.theme === "light" ? "#8ea5b8" : "#ffffff";
 
         flakes.forEach((flake) => {
@@ -539,12 +615,17 @@ const courseData = [
       }
 
       function animateSnow() {
-        if (!running) return;
+        if (!running || !snowEnabled) return;
         drawSnow(true);
         animationFrame = requestAnimationFrame(animateSnow);
       }
 
       function startSnow() {
+        if (!snowEnabled) {
+          stopSnow();
+          clearSnow();
+          return;
+        }
         if (running || reducedMotion.matches || document.hidden) {
           drawSnow(false);
           return;
@@ -559,6 +640,24 @@ const courseData = [
         animationFrame = null;
       }
 
+      toggle?.addEventListener("click", () => {
+        snowEnabled = !snowEnabled;
+        try {
+          localStorage.setItem(storageKey, String(snowEnabled));
+        } catch (_) {
+          // El control sigue funcionando aunque el navegador bloquee localStorage (por ejemplo, en file://).
+        }
+        updateSnowToggle();
+
+        if (snowEnabled) {
+          resizeSnowCanvas();
+          startSnow();
+        } else {
+          stopSnow();
+          clearSnow();
+        }
+      });
+
       window.addEventListener("resize", resizeSnowCanvas, { passive: true });
       document.addEventListener("visibilitychange", () => {
         if (document.hidden) stopSnow();
@@ -570,6 +669,7 @@ const courseData = [
         startSnow();
       });
 
+      updateSnowToggle();
       resizeSnowCanvas();
       startSnow();
     }

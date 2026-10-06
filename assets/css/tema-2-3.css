@@ -1,0 +1,5 @@
+/* Tema 2.3 · Aprendizaje NO supervisado */
+#tema23Overlay{--u2-accent:#a78bfa;--u2-accent-2:#2dd4bf;--u2-accent-rgb:167,139,250}
+#tema23Overlay .u2-cluster-ring{fill:none;stroke-width:2;stroke-dasharray:5 5;opacity:.38}
+#tema23Overlay .u2-cluster-a{stroke:#2dd4bf}.u2-cluster-b{stroke:#60a5fa}.u2-cluster-c{stroke:#a78bfa}
+#tema23Overlay .u2-assoc-root{background:linear-gradient(135deg,rgba(167,139,250,.18),rgba(45,212,191,.08))}

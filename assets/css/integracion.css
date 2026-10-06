@@ -8,7 +8,7 @@ body.topic-segment-open { overflow: hidden !important; }
 #ia-topic-segment .ia-seg-close{
   width:46px;height:46px;border-radius:50%;border:1px solid rgba(143,240,230,.24);
   color:#fff;background:rgba(9,30,31,.76);display:grid;place-items:center;font-size:1.5rem;
-  transition:.25s cubic-bezier(.2,.8,.2,1);padding:0;
+  transition:.25s cubic-bezier(.2,.8,.2,1);padding:0;cursor:pointer
 }
 #ia-topic-segment .ia-seg-close:hover{
   background:rgb(0, 184, 169);transform:rotate(360deg);
@@ -138,3 +138,8 @@ body.topic-segment-open .snow-canvas{
    Sus overlays se mantienen por debajo de .snow-canvas para conservar el efecto visual. */
 .u1-overlay{z-index:99999;}
 body.topic-segment-open .u1-overlay{overscroll-behavior:contain;}
+
+
+/* Unidad 2 reutiliza el patrón de overlay del curso y la nieve global. */
+.u2-overlay{z-index:99999;}
+body.topic-segment-open .u2-overlay{overscroll-behavior:contain;}

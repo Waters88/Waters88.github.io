@@ -63,10 +63,12 @@
   border-radius: 999px;
   background: rgba(20,184,166,.08);
   color: #b9f7f0;
-  font-size: 12px;
-  letter-spacing: .12em;
+  font-size: 11px;
+  letter-spacing: .13em;
+  font-weight:900;
+  width:fit-content;
   text-transform: uppercase;
-  white-space: nowrap;
+  /*white-space: nowrap;*/
 }
 
 .ia-seg-title-wrap {
@@ -82,7 +84,7 @@
   letter-spacing: -.02em;
 }
 
-.ia-seg-close {
+/*.ia-seg-close {
   width: 42px;
   height: 42px;
   border: 1px solid rgba(255,255,255,.13);
@@ -94,9 +96,9 @@
   transition: .2s ease;
 }
 .ia-seg-close:hover {
-  transform: rotate(4deg) scale(1.04);
+  transform: rotate(360deg) scale(1.04);
   background: rgba(255,255,255,.1);
-}
+}*/
 
 /* Subtítulo dinámico */
 .ia-seg-subtitle-bar {

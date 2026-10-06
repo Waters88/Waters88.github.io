@@ -1,9 +1,11 @@
-Carpeta reservada para recursos locales del curso.
+Recursos locales de imagen incluidos en esta versión del curso.
 
-El HTML original contiene referencias a archivos locales como:
+Archivos principales:
 - ia_gen_transparente.png
 - ia_gen_transparente2.png
+- lumen1.png
+- lumen2.png
+- lumen3.png
+- lumen4.png
 
-No se incluyeron porque no estaban disponibles entre los archivos proporcionados.
-Si los agregas, puedes colocarlos junto a index.html para conservar las rutas actuales,
-o moverlos a esta carpeta y actualizar sus src en index.html.
+Las Unidades 0, 1 y 2 pueden además contener recursos remotos referenciados directamente desde su HTML.
