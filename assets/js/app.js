@@ -436,6 +436,72 @@ const courseData = [
 
     window.openCourseSection = setSection;
 
+    // API pública mínima para componentes externos del curso (p. ej. Glosario).
+    // Resuelve títulos de unidad/tema/tarjeta y abre directamente el slide asociado.
+    function normalizeCourseTitle(value) {
+      return String(value ?? "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, " ")
+        .trim();
+    }
+
+    function courseTitleMatches(actual, requested) {
+      const a = normalizeCourseTitle(actual);
+      const b = normalizeCourseTitle(requested);
+      return Boolean(a && b && (a === b || a.includes(b) || b.includes(a)));
+    }
+
+    function resolveCourseRelation(relation = {}) {
+      const requestedUnit = relation.unit_title ?? relation.unitTitle ?? relation.unit;
+      const requestedTopic = relation.topic_title ?? relation.topicTitle ?? relation.topic;
+      const requestedCard = relation.cards_title ?? relation.card_title ?? relation.cardTitle ?? relation.card;
+
+      const unitIndex = courseData.findIndex((unit) =>
+        courseTitleMatches(unit.title, requestedUnit) || courseTitleMatches(unit.unit, requestedUnit)
+      );
+      if (unitIndex < 0) return null;
+
+      const topicIndex = courseData[unitIndex].topics.findIndex((topic) =>
+        courseTitleMatches(topic.title, requestedTopic)
+      );
+      if (topicIndex < 0) return null;
+
+      const topic = courseData[unitIndex].topics[topicIndex];
+      const cardIndex = topic.cards.findIndex((card) => courseTitleMatches(card.title, requestedCard));
+      if (cardIndex < 0) return null;
+
+      const card = topic.cards[cardIndex];
+      return {
+        unitIndex,
+        topicIndex,
+        cardIndex,
+        slideIndex: Number.isFinite(Number(card.slideIndex)) ? Number(card.slideIndex) : cardIndex,
+        unit: courseData[unitIndex],
+        topic,
+        card
+      };
+    }
+
+    function openCourseRelation(relation = {}) {
+      const resolved = resolveCourseRelation(relation);
+      if (!resolved) return false;
+
+      selectTopic(resolved.unitIndex, resolved.topicIndex, true);
+      setSection("curso");
+      document.body.classList.remove("mobile-sidebar-open");
+
+      const opener = window[resolved.topic.segmentOpen];
+      if (typeof opener !== "function") return false;
+      opener(resolved.slideIndex);
+      return true;
+    }
+
+    window.CourseData = courseData;
+    window.resolveCourseRelation = resolveCourseRelation;
+    window.openCourseRelation = openCourseRelation;
+
     function updateHeroVisibility() {
       hero.classList.toggle("show", currentSection === "curso");
     }

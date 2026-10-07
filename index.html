@@ -26,6 +26,7 @@
   <link rel="stylesheet" href="assets/css/tema-2-1.css">
   <link rel="stylesheet" href="assets/css/tema-2-2.css">
   <link rel="stylesheet" href="assets/css/tema-2-3.css">
+<link rel="stylesheet" href="assets/css/glosario.css">
   <link rel="stylesheet" href="assets/css/integracion.css">
 
 </head>
@@ -96,6 +97,10 @@
 <button class="nav-pill" data-section="proyecto">
 <i class="fa-solid fa-rocket"></i>
 <span>Proyecto</span>
+</button>
+<button class="nav-pill" data-section="glosario">
+<i class="fa-solid fa-book-bookmark"></i>
+<span>Glosario</span>
 </button>
 </div>
 </nav>
@@ -354,6 +359,27 @@
 </div>
 </div>
 </div>
+</div>
+</article>
+<article class="section" id="section-glosario">
+<div class="section-header">
+<div class="eyebrow"><span class="pulse-dot"></span><i class="fa-solid fa-book-bookmark"></i> Glosario</div>
+<h2>Conceptos clave del curso.</h2>
+<p>Busca términos del curso y abre directamente los temas y slides donde aparecen relacionados.</p>
+</div>
+<div class="glossary-toolbar">
+  <label class="glossary-search-shell" for="glossarySearch">
+    <span class="glossary-search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+    <input id="glossarySearch" type="search" autocomplete="off" placeholder="Buscar por concepto o palabras de la descripción…" aria-label="Buscar en el glosario"/>
+    <button class="glossary-clear" id="glossaryClear" type="button" aria-label="Limpiar búsqueda" title="Limpiar búsqueda"><i class="fa-solid fa-xmark"></i></button>
+  </label>
+  <span class="glossary-count" id="glossaryCount"><i class="fa-solid fa-book-open"></i>0 conceptos</span>
+</div>
+<div class="glossary-grid" id="glossaryGrid" aria-live="polite"></div>
+<div class="glossary-empty" id="glossaryEmpty" hidden>
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <strong>No encontramos conceptos con esa búsqueda.</strong>
+  <span>Prueba con otra palabra o limpia el filtro.</span>
 </div>
 </article>
 </section>
@@ -1371,5 +1397,6 @@
 <script src="assets/js/tema-2-3.js"></script>
 
 <script src="assets/js/app.js"></script>
+<script src="assets/js/glosario.js"></script>
 </body>
 </html>

@@ -1,0 +1,249 @@
+/* =========================================================
+   GLOSARIO · sección principal
+   Mantiene las variables visuales del curso y funciona en
+   modo claro / oscuro sin depender de estilos del carrusel.
+   ========================================================= */
+.glossary-toolbar{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:14px;
+  align-items:center;
+  margin:0 0 22px;
+}
+.glossary-search-shell{
+  position:relative;
+  display:flex;
+  align-items:center;
+  min-height:58px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--surface) 90%,transparent),color-mix(in srgb,var(--card-2) 88%,transparent));
+  box-shadow:var(--shadow-card);
+  overflow:hidden;
+  transition:var(--transition);
+}
+.glossary-search-shell:focus-within{
+  border-color:rgba(45,212,191,.48);
+  box-shadow:0 0 0 4px rgba(20,184,166,.08),var(--shadow-card);
+  transform:translateY(-1px);
+}
+.glossary-search-icon{
+  width:54px;
+  display:grid;
+  place-items:center;
+  color:var(--accent-text);
+  font-size:1.02rem;
+}
+.glossary-search-shell input{
+  flex:1;
+  min-width:0;
+  border:0;
+  outline:0;
+  color:var(--text);
+  background:transparent;
+  font:inherit;
+  font-size:.98rem;
+  padding:17px 8px 17px 0;
+}
+.glossary-search-shell input::placeholder{color:var(--muted);opacity:.82}
+.glossary-clear{
+  display:none;
+  width:38px;
+  height:38px;
+  margin-right:9px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  color:var(--muted);
+  background:var(--chip);
+  cursor:pointer;
+  transition:var(--transition);
+}
+.glossary-clear.is-visible{display:grid;place-items:center}
+.glossary-clear:hover{color:var(--text);border-color:rgba(45,212,191,.42);transform:rotate(8deg)}
+.glossary-count{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  min-height:44px;
+  padding:0 15px;
+  border-radius:999px;
+  color:var(--accent-text-strong);
+  background:var(--chip);
+  border:1px solid rgba(45,212,191,.19);
+  font-size:.82rem;
+  font-weight:850;
+  white-space:nowrap;
+}
+.glossary-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:20px;
+}
+.glossary-card{
+  position:relative;
+  overflow:hidden;
+  padding:24px;
+  display:flex;
+  flex-direction:column;
+  min-height:360px;
+  background:
+    radial-gradient(circle at 100% 0%,rgba(20,184,166,.12),transparent 26%),
+    linear-gradient(145deg,color-mix(in srgb,var(--card) 96%,transparent),color-mix(in srgb,var(--card-2) 96%,transparent));
+}
+.glossary-card::after{
+  content:"";
+  position:absolute;
+  width:210px;
+  height:210px;
+  right:-110px;
+  bottom:-120px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(96,165,250,.10),transparent 68%);
+  pointer-events:none;
+}
+.glossary-card-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:18px;
+}
+.glossary-number{
+  display:grid;
+  place-items:center;
+  width:42px;
+  height:30px;
+  border-radius:10px;
+  color:#031d1a;
+  background:linear-gradient(135deg,var(--teal-200),var(--teal-400));
+  font-size:.75rem;
+  font-weight:950;
+  letter-spacing:.08em;
+  box-shadow:0 8px 22px rgba(20,184,166,.18);
+}
+.glossary-related-count{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  color:var(--muted);
+  font-size:.72rem;
+  font-weight:800;
+}
+.glossary-concept-row{
+  display:grid;
+  grid-template-columns:52px 1fr;
+  gap:14px;
+  align-items:center;
+}
+.glossary-icon{
+  width:52px;
+  height:52px;
+  display:grid;
+  place-items:center;
+  border-radius:17px;
+  color:#041c1a;
+  background:linear-gradient(135deg,var(--teal-200),var(--teal-400),var(--blue));
+  box-shadow:0 14px 32px rgba(20,184,166,.16);
+}
+.glossary-concept-row h3{
+  margin:0;
+  color:var(--text);
+  font-size:clamp(1.25rem,2vw,1.7rem);
+  letter-spacing:-.025em;
+}
+.glossary-description{
+  margin:17px 0 21px;
+  color:var(--muted);
+  line-height:1.7;
+  font-size:.92rem;
+}
+.glossary-related-block{
+  margin-top:auto;
+  padding-top:17px;
+  border-top:1px solid var(--line);
+}
+.glossary-related-heading{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  margin-bottom:11px;
+  color:var(--text);
+  font-size:.82rem;
+}
+.glossary-related-heading i{color:var(--accent-text)}
+.glossary-related-list{display:grid;gap:9px}
+.glossary-related-link{
+  width:100%;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:10px;
+  align-items:center;
+  padding:11px 12px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  text-align:left;
+  color:var(--text);
+  background:color-mix(in srgb,var(--surface) 86%,transparent);
+  cursor:pointer;
+  transition:var(--transition);
+}
+.glossary-related-link:hover:not(:disabled){
+  transform:translateX(4px);
+  border-color:rgba(45,212,191,.38);
+  background:var(--chip);
+  box-shadow:0 10px 24px rgba(0,0,0,.09);
+}
+.glossary-related-link.is-unavailable{opacity:.48;cursor:not-allowed}
+.glossary-related-path{
+  min-width:0;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  flex-wrap:wrap;
+}
+.glossary-related-path span{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  min-width:0;
+  color:var(--muted);
+  font-size:.74rem;
+  line-height:1.35;
+}
+.glossary-related-path span i{color:var(--accent-text);font-size:.68rem}
+.glossary-related-path .glossary-related-slide{color:var(--text);font-weight:850}
+.glossary-path-arrow{color:color-mix(in srgb,var(--muted) 65%,transparent);font-size:.58rem}
+.glossary-open-label{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:6px 9px;
+  border-radius:999px;
+  color:var(--accent-text-strong);
+  background:var(--chip);
+  font-size:.68rem;
+  font-weight:900;
+  white-space:nowrap;
+}
+.glossary-empty{
+  margin-top:18px;
+  padding:42px 24px;
+  border:1px dashed var(--line);
+  border-radius:20px;
+  text-align:center;
+  color:var(--muted);
+  background:color-mix(in srgb,var(--surface) 68%,transparent);
+}
+.glossary-empty i{display:block;margin-bottom:12px;color:var(--accent-text);font-size:2rem}
+.glossary-empty strong{display:block;color:var(--text);font-size:1.05rem;margin-bottom:5px}
+.glossary-no-related{color:var(--muted);font-size:.8rem}
+@media(max-width:880px){.glossary-grid{grid-template-columns:1fr}}
+@media(max-width:640px){
+  .glossary-toolbar{grid-template-columns:1fr}
+  .glossary-count{justify-self:start}
+  .glossary-card{padding:19px}
+  .glossary-related-link{grid-template-columns:1fr}
+  .glossary-open-label{justify-self:start}
+  .glossary-path-arrow{display:none}
+  .glossary-related-path{display:grid;gap:5px}
+}
